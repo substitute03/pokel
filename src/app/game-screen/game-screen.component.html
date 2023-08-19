@@ -1,0 +1,98 @@
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="d-flex flex-column align-items-center">
+        <div *ngIf="targetName$ | async as targetName" class="d-flex">
+            <input *ngFor="let letter of targetName" class="form-control m-2 p-2 square-box text-center" type="text"
+                [value]="letter" readonly />
+        </div>
+
+        <div *ngIf="guess1">
+            <div class="d-flex" *ngIf="guessNumber === 1; else notGuess1">
+                <input *ngFor="let letter of guess1" class="form-control m-2 p-2 square-box text-center" type="text"
+                    [value]="letter" maxlength="1" (keyUp)="onKey($event)" />
+            </div>
+            <ng-template #notGuess1>
+                <div class="d-flex">
+                    <div *ngFor="let letter of guess1; let i = index"
+                        class="form-control m-2 p-2 square-box text-center">
+                        {{guess1[i]}}
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+
+        <div *ngIf="guess2">
+            <div class="d-flex" *ngIf="guessNumber === 2; else notGuess2">
+                <input *ngFor="let letter of guess2; let i = index" class="form-control m-2 p-2 square-box text-center"
+                    type="text" [value]="letter" maxlength="1" (keyUp)="onKey($event)" />
+            </div>
+            <ng-template #notGuess2>
+                <div class="d-flex">
+                    <div *ngFor="let letter of guess2; let i = index"
+                        class="form-control m-2 p-2 square-box text-center">
+                        {{guess2[i]}}
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+
+        <div *ngIf="guess3">
+            <div class="d-flex" *ngIf="guessNumber === 3; else notGuess3">
+                <input *ngFor="let letter of guess3; let i = index" class="form-control m-2 p-2 square-box text-center"
+                    type="text" [value]="letter" maxlength="1" (keyUp)="onKey($event)" />
+            </div>
+            <ng-template #notGuess3>
+                <div class="d-flex">
+                    <div *ngFor="let letter of guess3; let i = index"
+                        class="form-control m-2 p-2 square-box text-center">
+                        {{guess3[i]}}
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+
+        <div *ngIf="guess4">
+            <div class="d-flex" *ngIf="guessNumber === 4; else notGuess4">
+                <input *ngFor="let letter of guess4; let i = index" class="form-control m-2 p-2 square-box text-center"
+                    type="text" [value]="letter" maxlength="1" (keyUp)="onKey($event)" />
+            </div>
+            <ng-template #notGuess4>
+                <div class="d-flex">
+                    <div *ngFor="let letter of guess4; let i = index"
+                        class="form-control m-2 p-2 square-box text-center">
+                        {{guess4[i]}}
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+
+        <div *ngIf="guess5">
+            <div class="d-flex" *ngIf="guessNumber === 5; else notGuess5">
+                <input *ngFor="let letter of guess5; let i = index" class="form-control m-2 p-2 square-box text-center"
+                    type="text" [value]="letter" maxlength="1" (keyUp)="onKey($event)" />
+            </div>
+            <ng-template #notGuess5>
+                <div class="d-flex">
+                    <div *ngFor="let letter of guess5; let i = index"
+                        class="form-control m-2 p-2 square-box text-center">
+                        {{guess5[i]}}
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+
+        <div *ngIf="guess6">
+            <div class="d-flex" *ngIf="guessNumber === 6; else notGuess6">
+                <input *ngFor="let letter of guess6; let i = index" class="form-control m-2 p-2 square-box text-center"
+                    type="text" [value]="letter" maxlength="1" (keyUp)="onKey($event)" />
+            </div>
+            <ng-template #notGuess6>
+                <div class="d-flex">
+                    <div *ngFor="let letter of guess6; let i = index"
+                        class="form-control m-2 p-2 square-box text-center">
+                        {{guess1[i]}}
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
