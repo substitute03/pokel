@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Guess } from '../domain/guess';
 
 @Component({
     selector: 'pok-game-screen',
@@ -37,21 +38,27 @@ export class GameScreenComponent implements OnInit {
         "Mew"
     ];
 
-    // targetName$: Observable<string[]> | undefined;
     targetName$ = new BehaviorSubject<string[]>([]);
-    guess1: string[] = [];
-    guess2: string[] = [];
-    guess3: string[] = [];
-    guess4: string[] = [];
-    guess5: string[] = [];
-    guess6: string[] = [];
+    guesses: Guess[] = [];
     guessNumber: number = 1;
-    letterNunber = 1;
 
     constructor() { }
 
     ngOnInit(): void {
         this.resetGame();
+    }
+
+    public onKey(event: any): void {
+        const enteredCharacter = event.target.value;
+
+        // Check the entered character is a letter.
+        if (/^[A-Za-z]$/.test(enteredCharacter)) {
+            this.guesses
+                .find(g => g.guessNumber == this.guessNumber)
+                ?.addLetter(event.target.value);
+
+            this.guessNumber++;
+        }
     }
 
     private getTargetName(): string[] {
@@ -70,60 +77,29 @@ export class GameScreenComponent implements OnInit {
     }
 
     private setInitialGuesses(): void {
-        for (let i = 0; i < this.targetName$?.value.length; i++) {
-            this.guess1.push("");
-            this.guess2.push("");
-            this.guess3.push("");
-            this.guess4.push("");
-            this.guess5.push("");
-            this.guess6.push("");
+        for (let i = 1; i <= 6; i++) {
+            this.guesses.push(new Guess(this.targetName$.value, i))
         }
-
-        this.guessNumber = 1;
     }
 
     private resetGame(): void {
         this.targetName$.next(this.getTargetName());
         this.setInitialGuesses();
-    }
-
-    public onKey(event: any): void {
-        switch (this.guessNumber) {
-            case 1: {
-                this.guess1.push(event.target.value);
-                break;
-            }
-            case 2: {
-                this.guess2.push(event.target.value);
-                break;
-            }
-            case 3: {
-                this.guess3.push(event.target.value)
-                break;
-            }
-            case 4: {
-                this.guess4.push(event.target.value)
-                break;
-            }
-            case 5: {
-                this.guess5.push(event.target.value)
-                break;
-            }
-            case 6: {
-                this.guess6.push(event.target.value)
-                break;
-            }
-        }
+        this.guessNumber = 1;
     }
 
     private hasFoundWord(): boolean {
-        const allLettersHaveBeenEntered: boolean =
-            this.targetName$.value.length === this.guess1.length;
-
-        if (allLettersHaveBeenEntered) {
-            return this.targetName$.value.toString().toUpperCase() ===
-                this.guess1.toString().toUpperCase();
+        for (const guess of this.guesses) {
+            if (guess.isCorrect) {
+                return true;
+            }
         }
+
+        return false;
+    }
+
+
+    private isRealPokemon(): boolean {
 
 
         return false;
