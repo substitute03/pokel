@@ -8,19 +8,22 @@
         <div *ngIf="guesses">
             <div *ngFor="let guess of guesses; let gIndex = index">
                 <div *ngIf="guessNumber == gIndex + 1; else notCurrentGuess" [id]="'g' + gIndex" class="d-flex">
-                    <input *ngFor="let letter of guess.letters; let lIndex = index" [id]="'l' + lIndex"
-                        class="form-control m-2 p-2 square-box text-center text-capitalize" type="text"
-                        [value]="letter.value" maxlength="1" (keyUp)="onKey($event)" />
+                    <input #letterBox *ngFor="let letter of guess.letters; let lIndex = index" [id]="'l' + lIndex"
+                        class="m-2 p-2 square-box text-center" type="text" [ngClass]="{'focussed': letter.isFocus}"
+                        [value]="letter.value | uppercase" maxlength="1" readonly
+                        (keydown)="onKeyDown($event, letterBox)" />
                 </div>
                 <ng-template #notCurrentGuess>
                     <div class="d-flex">
                         <div *ngFor="let letter of guess.letters; let i = index"
                             class="form-control m-2 p-2 square-box text-center">
-                            {{ letter.value }}
+                            {{ letter.value | uppercase }}
                         </div>
                     </div>
                 </ng-template>
             </div>
         </div>
+
+        <h1 *ngIf="hasFoundWord === true">Word found! 🎉✨🎈</h1>
     </div>
 </div>

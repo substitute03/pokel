@@ -1,10 +1,8 @@
 export class Letter {
     public value: string = "";
+    public isFocus: boolean = false;
     public readonly guessOutcome: MatchType = 'none'
 
-    /**
-     *
-     */
     constructor(letter: string) {
         this.setValue(letter);
     }
@@ -15,8 +13,16 @@ export class Letter {
         }
     }
 
+    public deleteValue(): void {
+        this.value = "";
+    }
+
     private isValid(value: string): boolean {
-        return /^[A-Za-z]$/.test(this.value) && value.length === 1;
+        if ((/^[A-Za-z]$/.test(value)) && value.length === 1) {
+            return true;
+        }
+
+        return false;
     }
 }
 

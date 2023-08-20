@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Query } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Guess } from '../domain/guess';
 
@@ -41,6 +41,7 @@ export class GameScreenComponent implements OnInit {
     targetName$ = new BehaviorSubject<string[]>([]);
     guesses: Guess[] = [];
     guessNumber: number = 1;
+    hasFoundWord: boolean = false;
 
     constructor() { }
 
@@ -48,16 +49,25 @@ export class GameScreenComponent implements OnInit {
         this.resetGame();
     }
 
-    public onKey(event: any): void {
-        const enteredCharacter = event.target.value;
+    public onKeyDown(event: KeyboardEvent, currentInputElement: HTMLInputElement): void {
+        const enteredCharacter = event.key;
 
-        // Check the entered character is a letter.
-        if (/^[A-Za-z]$/.test(enteredCharacter)) {
-            this.guesses
-                .find(g => g.guessNumber == this.guessNumber)
-                ?.addLetter(event.target.value);
+        let guessToUpdate = this.guesses
+            .find(g => g.guessNumber === this.guessNumber);
 
-            this.guessNumber++;
+        // If the character is valid, add the Letter to the Guess.
+        if (this.isValidCharacter(enteredCharacter)) {
+            guessToUpdate?.addLetter(enteredCharacter);
+            this.setFocusToNextElement(event, currentInputElement);
+
+            if (this.isGuessCorrect() === true) {
+                this.hasFoundWord = true;
+            }
+        }
+        else if (enteredCharacter === "Backspace") {
+            // else if backspace was pressed, remove the last Letter.
+            guessToUpdate?.removeLastLetter();
+            this.setFocusToPreviousElement(event, currentInputElement);
         }
     }
 
@@ -88,16 +98,76 @@ export class GameScreenComponent implements OnInit {
         this.guessNumber = 1;
     }
 
-    private hasFoundWord(): boolean {
-        for (const guess of this.guesses) {
-            if (guess.isCorrect) {
-                return true;
-            }
+    private isGuessCorrect(): boolean {
+        const currentGuess = this.guesses
+            .find(g => g.guessNumber === this.guessNumber);
+
+        if (currentGuess?.isCorrect) {
+            return true;
+        }
+
+        if (currentGuess?.lettersNotFilled! === 0) {
+            this.guessNumber++;
         }
 
         return false;
     }
 
+    private isValidCharacter(char: string): boolean {
+        if (/^[A-Za-z]$/.test(char)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private setFocusToPreviousElement(event: KeyboardEvent, currentInputElement: HTMLInputElement): void {
+        // Prevent default browser button press behaviour just in case.
+        event.preventDefault();
+
+        // Get the current input element's ID.
+        const currentElementId = currentInputElement.id;
+
+        // Extract the index from the ID.
+        const currentIndex =
+            parseInt(currentElementId.slice(1));
+
+        // If there's a previous input element, set focus to it.
+        if (currentIndex > 0) {
+            const previousElementId = 'l' + (currentIndex - 1);
+
+            const previousInputElement = document
+                .getElementById(previousElementId) as HTMLInputElement;
+
+            if (previousInputElement) {
+                previousInputElement.focus();
+            }
+        }
+    }
+
+    private setFocusToNextElement(event: KeyboardEvent, currentInputElement: HTMLInputElement): void {
+        // Prevent default browser button press behaviour just in case.
+        event.preventDefault();
+
+        // Get the current input element's ID.
+        const currentElementId = currentInputElement.id;
+
+        // Extract the index from the ID.
+        const currentIndex =
+            parseInt(currentElementId.slice(1));
+
+        // If there's a next input element, set focus to it.
+        if (currentIndex > 0) {
+            const nextElementId = 'l' + (currentIndex + 1);
+
+            const nextInputElement = document
+                .getElementById(nextElementId) as HTMLInputElement;
+
+            if (nextInputElement) {
+                nextInputElement.focus();
+            }
+        }
+    }
 
     private isRealPokemon(): boolean {
 

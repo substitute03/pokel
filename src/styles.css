@@ -6,3 +6,8 @@
     height: 50px; /* Same value as width for a square */
 }
 
+.focussed {
+    border-color: #000000 !important;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0), 0 0 8px rgba(0, 0, 0, 0) !important;
+  }
+
