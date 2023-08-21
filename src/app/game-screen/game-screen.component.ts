@@ -1,4 +1,4 @@
-import { Component, OnInit, Query } from '@angular/core';
+import { Component, ElementRef, OnInit, Query, ViewChild, Renderer2, HostListener } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Guess } from '../domain/guess';
 
@@ -42,6 +42,10 @@ export class GameScreenComponent implements OnInit {
     guesses: Guess[] = [];
     guessNumber: number = 1;
     hasFoundWord: boolean = false;
+    focussedLetterIndex: number | null = null;
+    focussedGuessIndex: number | null = null;
+
+    @ViewChild('letterBoxesRef', { read: ElementRef }) letterBoxesRef!: ElementRef;
 
     constructor() { }
 
@@ -49,27 +53,115 @@ export class GameScreenComponent implements OnInit {
         this.resetGame();
     }
 
-    public onKeyDown(event: KeyboardEvent, currentInputElement: HTMLInputElement): void {
-        const enteredCharacter = event.key;
-
-        let guessToUpdate = this.guesses
+    @HostListener('window:keydown', ['$event'])
+    onWindowKeyDown(event: KeyboardEvent) {
+        if (this.focussedGuessIndex === null || this.focussedLetterIndex === null) {
+            return;
+        }
+        const pressedKey = event.key;
+        let guessToUpdate: Guess | undefined = this.guesses
             .find(g => g.guessNumber === this.guessNumber);
 
-        // If the character is valid, add the Letter to the Guess.
-        if (this.isValidCharacter(enteredCharacter)) {
-            guessToUpdate?.addLetter(enteredCharacter);
-            this.setFocusToNextElement(event, currentInputElement);
+        // Handle backspace
+        if (pressedKey === "Backspace") {
+            guessToUpdate?.letters[this.focussedLetterIndex]
+                .deleteValue();
 
-            if (this.isGuessCorrect() === true) {
-                this.hasFoundWord = true;
-            }
+            this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex - 1);
         }
-        else if (enteredCharacter === "Backspace") {
-            // else if backspace was pressed, remove the last Letter.
-            guessToUpdate?.removeLastLetter();
-            this.setFocusToPreviousElement(event, currentInputElement);
+
+        // Handle valid key press
+        if (this.isValidCharacter(pressedKey)) {
+            guessToUpdate?.letters[this.focussedLetterIndex]
+                .setValue(pressedKey);
+
+            this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex + 1)
+        };
+
+        // Handle enter
+
+    }
+
+    // public onKeyDown(event: Event, gIndex: number, lIndex: number): void {
+    //     const enteredCharacter: string = (event as KeyboardEvent).key;
+
+    //     let guessToUpdate = this.guesses
+    //         .find(g => g.guessNumber === this.guessNumber);
+
+    //     if (enteredCharacter === "Backspace") {
+    //         // else if backspace was pressed, remove the last Letter.
+    //         guessToUpdate?.removeLastLetter();
+    //         this.onLetterBoxClick(gIndex, lIndex - 1);
+    //         // this.setFocusToPreviousElement(event, currentInputElement);
+    //     }
+    //     else if (enteredCharacter === "Enter") {
+    //         this.checkIfGuessIsCorrect();
+    //     }
+    //     // If the character is valid, add the Letter to the Guess.
+    //     else if (this.isValidCharacter(enteredCharacter)) {
+    //         guessToUpdate?.addLetter(enteredCharacter, lIndex);
+
+    //         this.onLetterBoxClick(gIndex, lIndex);
+
+    //         // if (setFocusToElement){
+    //         //     setFocusToElement.focus();
+    //         // }
+    //         // this.setFocusToNextElement(event, currentInputElement);
+
+    //         // if (this.isGuessCorrect() === true) {
+    //         //     this.hasFoundWord = true;
+    //         // }
+    //     }
+
+    // }
+
+    // public onInputClick(event: MouseEvent, clickedInputElement: HTMLDivElement): void {
+    //     const clickedElementId: number = +clickedInputElement.id;
+    //     if (clickedElementId) {
+    //         const clickedElement: HTMLElement | null = document
+    //             .getElementById(clickedElementId.toString());
+
+    //         if (clickedElement) {
+    //             clickedElement.focus();
+    //         }
+    //     }
+    // }
+
+
+    public focusLetterBox(guessIndex: number, letterIndex: number): void {
+        const letterBoxElement = this.getLetterBoxElement(guessIndex, letterIndex);
+
+        if (letterBoxElement) {
+            // Remove focus from all letter boxes
+            this.blurAllLetterBoxes();
+
+            // Store the foccused guess and letter indexes
+            this.focussedGuessIndex = guessIndex;
+            this.focussedLetterIndex = letterIndex;
+
+            // Set focus and highlight on the clicked letter box
+            letterBoxElement.focus();
+            letterBoxElement.classList.remove('border-secondary')
+            letterBoxElement.classList.add('border-4');
+            letterBoxElement.classList.add('border-dark');
         }
     }
+
+    private blurAllLetterBoxes(): void {
+        const letterBoxes = this.letterBoxesRef.nativeElement.querySelectorAll('.letter-box');
+        letterBoxes.forEach((letterBox: HTMLElement) => {
+            letterBox.blur();
+            letterBox.classList.remove('border-dark')
+            letterBox.classList.remove('border-4');
+            letterBox.classList.add('border-secondary');
+        });
+    }
+
+    private getLetterBoxElement(guessIndex: number, letterIndex: number): HTMLElement | null {
+        const letterBoxId = `g${guessIndex}l${letterIndex}`;
+        return this.letterBoxesRef.nativeElement.querySelector(`#${letterBoxId}`);
+    }
+
 
     private getTargetName(): string[] {
         const randomIndex = Math
@@ -96,9 +188,16 @@ export class GameScreenComponent implements OnInit {
         this.targetName$.next(this.getTargetName());
         this.setInitialGuesses();
         this.guessNumber = 1;
+
+        // const startingInputElementToFocus = document
+        //     .getElementById("1") as HTMLInputElement;
+
+        // if (startingInputElementToFocus) {
+        //     startingInputElementToFocus.focus();
+        // }
     }
 
-    private isGuessCorrect(): boolean {
+    private checkIfGuessIsCorrect(): boolean {
         const currentGuess = this.guesses
             .find(g => g.guessNumber === this.guessNumber);
 
@@ -121,7 +220,7 @@ export class GameScreenComponent implements OnInit {
         return false;
     }
 
-    private setFocusToPreviousElement(event: KeyboardEvent, currentInputElement: HTMLInputElement): void {
+    private setFocusToPreviousElement(event: KeyboardEvent, currentInputElement: HTMLDivElement): void {
         // Prevent default browser button press behaviour just in case.
         event.preventDefault();
 
@@ -134,7 +233,7 @@ export class GameScreenComponent implements OnInit {
 
         // If there's a previous input element, set focus to it.
         if (currentIndex > 0) {
-            const previousElementId = 'l' + (currentIndex - 1);
+            const previousElementId = "letter" + (currentIndex - 1).toString();
 
             const previousInputElement = document
                 .getElementById(previousElementId) as HTMLInputElement;
@@ -145,7 +244,7 @@ export class GameScreenComponent implements OnInit {
         }
     }
 
-    private setFocusToNextElement(event: KeyboardEvent, currentInputElement: HTMLInputElement): void {
+    private setFocusToNextElement(event: KeyboardEvent, currentInputElement: HTMLDivElement): void {
         // Prevent default browser button press behaviour just in case.
         event.preventDefault();
 
@@ -154,11 +253,11 @@ export class GameScreenComponent implements OnInit {
 
         // Extract the index from the ID.
         const currentIndex =
-            parseInt(currentElementId.slice(1));
+            parseInt(currentElementId.slice(0, 1));
 
         // If there's a next input element, set focus to it.
         if (currentIndex > 0) {
-            const nextElementId = 'l' + (currentIndex + 1);
+            const nextElementId = "letter" + (currentIndex + 1).toString();
 
             const nextInputElement = document
                 .getElementById(nextElementId) as HTMLInputElement;

@@ -26,19 +26,18 @@ export class Guess {
         this.letters = targetName.map(() => new Letter(""));
         this.targetName = targetName.toString();
         this.guessNumber = guessNumber;
-
-        // If this is the first guess, then set the focus of the first letter
-        // to true so that the correct CSS is applied.
-        if (guessNumber === 1) {
-            this.letters[0].isFocus = true;
-        }
     }
 
-    public addLetter(letter: string): void {
-        if (this.lettersFilled !== this.targetName.length) {
-            let letterToUpdate: Letter | undefined = this.letters.find(l => l.value === "");
-            letterToUpdate?.setValue(letter);
-            this.updateFocus(); // Used to apply CSS to the currently focuessed letter.
+    public addLetter(letter: string, indexToAdd?: number): void {
+        if (indexToAdd) { // Add at index.
+            this.letters[indexToAdd].setValue(letter);
+        }
+        else if (!indexToAdd) { // Add at first empty letter.
+            if (this.lettersFilled !== this.targetName.length) {
+                let letterToUpdate: Letter | undefined = this.letters.find(l => l.value === "");
+                letterToUpdate?.setValue(letter);
+                this.updateFocus(); // Used to apply CSS to the currently focuessed letter.
+            }
         }
         else {
             throw new Error(`Cannot add a letter beyond the target name's length (${this.targetName.length})`)
