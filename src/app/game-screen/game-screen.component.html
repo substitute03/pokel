@@ -1,16 +1,16 @@
 <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="d-flex flex-column align-items-center">
-        <div *ngIf="targetName$ | async as targetName" class="d-flex">
+        <!-- <div *ngIf="targetName$ | async as targetName" class="d-flex">
             <input *ngFor="let letter of targetName" class="form-control m-2 p-2 square-box text-center" type="text"
                 [value]="letter" readonly />
-        </div>
+        </div> -->
 
         <ng-container *ngIf="guesses">
             <ng-container *ngFor="let guess of guesses; let gIndex = index">
                 <ng-container *ngIf="guessNumber == gIndex + 1; else notCurrentGuess">
                     <div class="d-flex" #letterBoxesRef>
                         <div *ngFor="let letter of guess.letters; let lIndex = index" [id]="'g' + gIndex + 'l' + lIndex"
-                            class="m-2 p-2 square-box text-center letter-box border border-secondary"
+                            class="m-2 p-2 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
                             (click)="focusLetterBox(gIndex, lIndex)">
                             {{ letter.value | uppercase }}
                         </div>
@@ -19,7 +19,13 @@
                 <ng-template #notCurrentGuess>
                     <div class="d-flex">
                         <div *ngFor="let letter of guess.letters; let i = index"
-                            class="form-control m-2 p-2 square-box text-center">
+                            class="form-control m-2 p-2 square-box d-flex align-items-center justify-content-center border"
+                            [ngClass]="
+                            {   'border-4': letter.matchType !== 'unknown',
+                                'border-secondary': letter.matchType === 'none',
+                                'border-warning': letter.matchType === 'fuzzy',
+                                'border-success': letter.matchType === 'exact'
+                            }">
                             {{ letter.value | uppercase }}
                         </div>
                     </div>

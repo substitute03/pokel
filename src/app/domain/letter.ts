@@ -1,7 +1,7 @@
 export class Letter {
     public value: string = "";
     public isFocus: boolean = false;
-    public readonly guessOutcome: MatchType = 'none'
+    public matchType: MatchType = 'unknown'
 
     constructor(letter: string) {
         this.setValue(letter);
@@ -26,4 +26,4 @@ export class Letter {
     }
 }
 
-export type MatchType = 'exact' | 'fuzzy' | 'none'
+export type MatchType = 'exact' | 'fuzzy' | 'none' | 'unknown';

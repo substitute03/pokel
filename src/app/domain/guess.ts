@@ -1,4 +1,5 @@
 import { Letter } from "./letter";
+import { MatchType } from "./letter";
 
 export class Guess {
     public readonly letters: Letter[] = [];
@@ -9,7 +10,7 @@ export class Guess {
     private targetName: string = "";
 
     public getValue(): string {
-        return this.letters.map(l => l.value).toString();
+        return this.letters.filter(l => l.value !== "").map(l => l.value).join("");
     }
 
     public get lettersFilled(): number {
@@ -24,7 +25,7 @@ export class Guess {
 
     constructor(targetName: string[], guessNumber: number) {
         this.letters = targetName.map(() => new Letter(""));
-        this.targetName = targetName.toString();
+        this.targetName = targetName.map(char => char).join("");;
         this.guessNumber = guessNumber;
     }
 
@@ -70,14 +71,32 @@ export class Guess {
     }
 
     private isGuessCorrect(): boolean {
-        if (this.getValue().toUpperCase() == this.targetName.toUpperCase()) {
+        this.evaluate();
+
+        if (this.letters.filter(l => l.matchType === "exact").length === this.targetName.length) {
             return true;
         }
 
         return false;
     }
 
-    private setLetterMatchTypes(): void {
+    private evaluate(): void {
+        for (let i = 0; i < this.targetName.length; i++) {
+            let letter: string = this.letters[i].value.toUpperCase();
+            let targetLetter: string = this.targetName.substring(i, i + 1).toUpperCase();
 
+            if (letter === "") {
+                this.letters[i].matchType = 'none';
+            }
+            else if (letter === targetLetter) {
+                this.letters[i].matchType = 'exact';
+            }
+            else if (this.targetName.toUpperCase().includes(letter)) {
+                this.letters[i].matchType = 'fuzzy';
+            }
+            else {
+                this.letters[i].matchType = 'none'
+            }
+        }
     }
 }

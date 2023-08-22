@@ -9,33 +9,33 @@ import { Guess } from '../domain/guess';
 })
 export class GameScreenComponent implements OnInit {
 
-    gen1Pokemon: string[] = [
-        "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard",
-        "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
-        "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot",
-        "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok",
-        "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran", "Nidorina",
-        "Nidoqueen", "Nidorino", "Nidoking", "Clefairy", "Clefable",
-        "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat",
-        "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat",
-        "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck",
-        "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag",
-        "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop",
-        "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool",
-        "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash",
-        "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetchd", "Doduo",
-        "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder",
-        "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee",
-        "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute",
-        "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung",
-        "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela",
-        "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu",
-        "Starmie", "MrMime", "Scyther", "Jynx", "Electabuzz", "Magmar",
-        "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto",
-        "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte",
-        "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno",
-        "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo",
-        "Mew"
+    pokemon: string[] = [
+        "BULBASAUR", "IVYSAUR", "VENUSAUR", "CHARMANDER", "CHARMELEON", "CHARIZARD",
+        "SQUIRTLE", "WARTORTLE", "BLASTOISE", "CATERPIE", "METAPOD", "BUTTERFREE",
+        "WEEDLE", "KAKUNA", "BEEDRILL", "PIDGEY", "PIDGEOTTO", "PIDGEOT",
+        "RATTATA", "RATICATE", "SPEAROW", "FEAROW", "EKANS", "ARBOK",
+        "PIKACHU", "RAICHU", "SANDSHREW", "SANDSLASH", "NIDORAN", "NIDORINA",
+        "NIDOQUEEN", "NIDORINO", "NIDOKING", "CLEFAIRY", "CLEFABLE",
+        "VULPIX", "NINETALES", "JIGGLYPUFF", "WIGGLYTUFF", "ZUBAT", "GOLBAT",
+        "ODDISH", "GLOOM", "VILEPLUME", "PARAS", "PARASECT", "VENONAT",
+        "VENOMOTH", "DIGLETT", "DUGTRIO", "MEOWTH", "PERSIAN", "PSYDUCK",
+        "GOLDUCK", "MANKEY", "PRIMEAPE", "GROWLITHE", "ARCANINE", "POLIWAG",
+        "POLIWHIRL", "POLIWRATH", "ABRA", "KADABRA", "ALAKAZAM", "MACHOP",
+        "MACHOKE", "MACHAMP", "BELLSPROUT", "WEEPINBELL", "VICTREEBEL", "TENTACOOL",
+        "TENTACRUEL", "GEODUDE", "GRAVELER", "GOLEM", "PONYTA", "RAPIDASH",
+        "SLOWPOKE", "SLOWBRO", "MAGNEMITE", "MAGNETON", "FARFETCHD", "DODUO",
+        "DODRIO", "SEEL", "DEWGONG", "GRIMER", "MUK", "SHELLDER",
+        "CLOYSTER", "GASTLY", "HAUNTER", "GENGAR", "ONIX", "DROWZEE",
+        "HYPNO", "KRABBY", "KINGLER", "VOLTORB", "ELECTRODE", "EXEGGCUTE",
+        "EXEGGUTOR", "CUBONE", "MAROWAK", "HITMONLEE", "HITMONCHAN", "LICKITUNG",
+        "KOFFING", "WEEZING", "RHYHORN", "RHYDON", "CHANSEY", "TANGELA",
+        "KANGASKHAN", "HORSEA", "SEADRA", "GOLDEEN", "SEAKING", "STARYU",
+        "STARMIE", "MRMIME", "SCYTHER", "JYNX", "ELECTABUZZ", "MAGMAR",
+        "PINSIR", "TAUROS", "MAGIKARP", "GYARADOS", "LAPRAS", "DITTO",
+        "EEVEE", "VAPOREON", "JOLTEON", "FLAREON", "PORYGON", "OMANYTE",
+        "OMASTAR", "KABUTO", "KABUTOPS", "AERODACTYL", "SNORLAX", "ARTICUNO",
+        "ZAPDOS", "MOLTRES", "DRATINI", "DRAGONAIR", "DRAGONITE", "MEWTWO",
+        "MEW"
     ];
 
     targetName$ = new BehaviorSubject<string[]>([]);
@@ -70,63 +70,29 @@ export class GameScreenComponent implements OnInit {
             this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex - 1);
         }
 
+        // Handle enter
+        else if (pressedKey === "Enter") {
+            const currentGuess: Guess = this.getCurrentGuess();
+            console.log(currentGuess.getValue().toUpperCase());
+
+            if (currentGuess.lettersNotFilled === 0 && currentGuess.isCorrect) {
+                this.hasFoundWord = true;
+            }
+            else if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
+                currentGuess.isCorrect; // This will evaluate the guess and set the letter match types.
+                this.guessNumber++;
+            }
+
+        }
+
         // Handle valid key press
-        if (this.isValidCharacter(pressedKey)) {
+        else if (this.isValidCharacter(pressedKey)) {
             guessToUpdate?.letters[this.focussedLetterIndex]
                 .setValue(pressedKey);
 
             this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex + 1)
         };
-
-        // Handle enter
-
     }
-
-    // public onKeyDown(event: Event, gIndex: number, lIndex: number): void {
-    //     const enteredCharacter: string = (event as KeyboardEvent).key;
-
-    //     let guessToUpdate = this.guesses
-    //         .find(g => g.guessNumber === this.guessNumber);
-
-    //     if (enteredCharacter === "Backspace") {
-    //         // else if backspace was pressed, remove the last Letter.
-    //         guessToUpdate?.removeLastLetter();
-    //         this.onLetterBoxClick(gIndex, lIndex - 1);
-    //         // this.setFocusToPreviousElement(event, currentInputElement);
-    //     }
-    //     else if (enteredCharacter === "Enter") {
-    //         this.checkIfGuessIsCorrect();
-    //     }
-    //     // If the character is valid, add the Letter to the Guess.
-    //     else if (this.isValidCharacter(enteredCharacter)) {
-    //         guessToUpdate?.addLetter(enteredCharacter, lIndex);
-
-    //         this.onLetterBoxClick(gIndex, lIndex);
-
-    //         // if (setFocusToElement){
-    //         //     setFocusToElement.focus();
-    //         // }
-    //         // this.setFocusToNextElement(event, currentInputElement);
-
-    //         // if (this.isGuessCorrect() === true) {
-    //         //     this.hasFoundWord = true;
-    //         // }
-    //     }
-
-    // }
-
-    // public onInputClick(event: MouseEvent, clickedInputElement: HTMLDivElement): void {
-    //     const clickedElementId: number = +clickedInputElement.id;
-    //     if (clickedElementId) {
-    //         const clickedElement: HTMLElement | null = document
-    //             .getElementById(clickedElementId.toString());
-
-    //         if (clickedElement) {
-    //             clickedElement.focus();
-    //         }
-    //     }
-    // }
-
 
     public focusLetterBox(guessIndex: number, letterIndex: number): void {
         const letterBoxElement = this.getLetterBoxElement(guessIndex, letterIndex);
@@ -165,9 +131,9 @@ export class GameScreenComponent implements OnInit {
 
     private getTargetName(): string[] {
         const randomIndex = Math
-            .floor(Math.random() * this.gen1Pokemon.length);
+            .floor(Math.random() * this.pokemon.length);
 
-        const randomName = this.gen1Pokemon[randomIndex];
+        const randomName = this.pokemon[randomIndex];
 
         let targetName: string[] = [];
 
@@ -176,6 +142,11 @@ export class GameScreenComponent implements OnInit {
         }
 
         return targetName;
+    }
+
+    private getCurrentGuess(): Guess {
+        return this.guesses
+            .find(g => g.guessNumber === this.guessNumber)!;
     }
 
     private setInitialGuesses(): void {
@@ -195,21 +166,6 @@ export class GameScreenComponent implements OnInit {
         // if (startingInputElementToFocus) {
         //     startingInputElementToFocus.focus();
         // }
-    }
-
-    private checkIfGuessIsCorrect(): boolean {
-        const currentGuess = this.guesses
-            .find(g => g.guessNumber === this.guessNumber);
-
-        if (currentGuess?.isCorrect) {
-            return true;
-        }
-
-        if (currentGuess?.lettersNotFilled! === 0) {
-            this.guessNumber++;
-        }
-
-        return false;
     }
 
     private isValidCharacter(char: string): boolean {
