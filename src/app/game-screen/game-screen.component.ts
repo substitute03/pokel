@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Query, ViewChild, Renderer2, HostListener } from '@angular/core';
+import { Component, ElementRef, OnInit, Query, ViewChild, Renderer2, HostListener, ChangeDetectorRef } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Guess } from '../domain/guess';
 
@@ -39,15 +39,17 @@ export class GameScreenComponent implements OnInit {
     ];
 
     targetName$ = new BehaviorSubject<string[]>([]);
+    targetNameString: string = "";
     guesses: Guess[] = [];
     guessNumber: number = 1;
     hasFoundWord: boolean = false;
     focussedLetterIndex: number | null = null;
     focussedGuessIndex: number | null = null;
+    showTargetName: boolean = false;
 
     @ViewChild('letterBoxesRef', { read: ElementRef }) letterBoxesRef!: ElementRef;
 
-    constructor() { }
+    constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
     ngOnInit(): void {
         this.resetGame();
@@ -62,12 +64,45 @@ export class GameScreenComponent implements OnInit {
         let guessToUpdate: Guess | undefined = this.guesses
             .find(g => g.guessNumber === this.guessNumber);
 
+        // Handle left arrow
+        if (pressedKey === "ArrowLeft") {
+            if (this.focussedLetterIndex === -1) {
+                this.focussedLetterIndex = this.targetNameString.length - 1;
+            } else if (this.focussedLetterIndex === 0) {
+                this.focussedLetterIndex = 0;
+            } else {
+                this.focussedLetterIndex -= 1;
+            }
+
+            this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
+        }
+        // Handle right arrow
+        if (pressedKey === "ArrowRight") {
+            if (this.focussedLetterIndex === -1) {
+                this.focussedLetterIndex = -1;
+            } else if (this.focussedLetterIndex === this.targetNameString.length - 1) {
+                this.focussedLetterIndex = -1;
+                this.blurAllLetterBoxes();
+            } else {
+                this.focussedLetterIndex += 1;
+            }
+
+            this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
+        }
+
         // Handle backspace
         if (pressedKey === "Backspace") {
-            guessToUpdate?.letters[this.focussedLetterIndex]
-                .deleteValue();
+            if (this.focussedLetterIndex == -1) {
+                guessToUpdate?.letters[this.targetName$.value.length - 1]
+                    .deleteValue();
+                this.focusLetterBox(this.focussedGuessIndex, this.targetName$.value.length - 1)
+            }
+            else {
+                guessToUpdate?.letters[this.focussedLetterIndex - 1]
+                    .deleteValue();
 
-            this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex - 1);
+                this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex - 1);
+            }
         }
 
         // Handle enter
@@ -76,11 +111,23 @@ export class GameScreenComponent implements OnInit {
             console.log(currentGuess.getValue().toUpperCase());
 
             if (currentGuess.lettersNotFilled === 0 && currentGuess.isCorrect) {
+                this.blurAllLetterBoxes(); // Make sure border styles are removed so that the succes borders apply correctly to the all current guess boxed.
                 this.hasFoundWord = true;
             }
             else if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
                 currentGuess.isCorrect; // This will evaluate the guess and set the letter match types.
+
+                if (this.guessNumber === 6) {
+                    this.showTargetName = true;
+                    return;
+                }
+
                 this.guessNumber++;
+                this.focussedGuessIndex++;
+                this.focussedLetterIndex = 0;
+
+                // Focus the first letter box of the next guess row.
+                this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
             }
 
         }
@@ -90,11 +137,23 @@ export class GameScreenComponent implements OnInit {
             guessToUpdate?.letters[this.focussedLetterIndex]
                 .setValue(pressedKey);
 
-            this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex + 1)
+            // if at the last index, set focuessedindex to -1 so the extra icon appears after the guess letterbox.
+            const isLastLetter: boolean =
+                this.focussedLetterIndex === this.targetName$.value.length! - 1;
+
+            if (isLastLetter) {
+                this.focussedLetterIndex = -1;
+                this.blurAllLetterBoxes();
+            }
+            else {
+                this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex + 1)
+            }
+
         };
     }
 
     public focusLetterBox(guessIndex: number, letterIndex: number): void {
+        this.changeDetectorRef.detectChanges();
         const letterBoxElement = this.getLetterBoxElement(guessIndex, letterIndex);
 
         if (letterBoxElement) {
@@ -150,22 +209,21 @@ export class GameScreenComponent implements OnInit {
     }
 
     private setInitialGuesses(): void {
+        this.guesses = [];
         for (let i = 1; i <= 6; i++) {
             this.guesses.push(new Guess(this.targetName$.value, i))
         }
     }
 
-    private resetGame(): void {
+    public resetGame(): void {
         this.targetName$.next(this.getTargetName());
+        this.targetNameString = this.targetName$.value.filter(l => l !== "").map(l => l).join("");
         this.setInitialGuesses();
         this.guessNumber = 1;
-
-        // const startingInputElementToFocus = document
-        //     .getElementById("1") as HTMLInputElement;
-
-        // if (startingInputElementToFocus) {
-        //     startingInputElementToFocus.focus();
-        // }
+        this.hasFoundWord = false;
+        this.focussedGuessIndex = 0;
+        this.focussedLetterIndex = 0;
+        this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
     }
 
     private isValidCharacter(char: string): boolean {
@@ -176,53 +234,8 @@ export class GameScreenComponent implements OnInit {
         return false;
     }
 
-    private setFocusToPreviousElement(event: KeyboardEvent, currentInputElement: HTMLDivElement): void {
-        // Prevent default browser button press behaviour just in case.
-        event.preventDefault();
 
-        // Get the current input element's ID.
-        const currentElementId = currentInputElement.id;
 
-        // Extract the index from the ID.
-        const currentIndex =
-            parseInt(currentElementId.slice(1));
-
-        // If there's a previous input element, set focus to it.
-        if (currentIndex > 0) {
-            const previousElementId = "letter" + (currentIndex - 1).toString();
-
-            const previousInputElement = document
-                .getElementById(previousElementId) as HTMLInputElement;
-
-            if (previousInputElement) {
-                previousInputElement.focus();
-            }
-        }
-    }
-
-    private setFocusToNextElement(event: KeyboardEvent, currentInputElement: HTMLDivElement): void {
-        // Prevent default browser button press behaviour just in case.
-        event.preventDefault();
-
-        // Get the current input element's ID.
-        const currentElementId = currentInputElement.id;
-
-        // Extract the index from the ID.
-        const currentIndex =
-            parseInt(currentElementId.slice(0, 1));
-
-        // If there's a next input element, set focus to it.
-        if (currentIndex > 0) {
-            const nextElementId = "letter" + (currentIndex + 1).toString();
-
-            const nextInputElement = document
-                .getElementById(nextElementId) as HTMLInputElement;
-
-            if (nextInputElement) {
-                nextInputElement.focus();
-            }
-        }
-    }
 
     private isRealPokemon(): boolean {
 
