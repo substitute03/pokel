@@ -57,7 +57,6 @@ export class GameScreenComponent implements OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onWindowKeyDown(event: KeyboardEvent) {
-        event.preventDefault();
         if (this.focussedGuessIndex === null || this.focussedLetterIndex === null) {
             return;
         }
@@ -79,6 +78,7 @@ export class GameScreenComponent implements OnInit {
         }
         // Handle right arrow
         if (pressedKey === "ArrowRight" || pressedKey === "Tab") {
+            event.preventDefault();
             if (this.focussedLetterIndex === -1) {
                 this.focussedLetterIndex = -1;
             } else if (this.focussedLetterIndex === this.targetNameString.length - 1) {
