@@ -57,6 +57,7 @@ export class GameScreenComponent implements OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onWindowKeyDown(event: KeyboardEvent) {
+        event.preventDefault();
         if (this.focussedGuessIndex === null || this.focussedLetterIndex === null) {
             return;
         }
@@ -77,7 +78,7 @@ export class GameScreenComponent implements OnInit {
             this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
         }
         // Handle right arrow
-        if (pressedKey === "ArrowRight") {
+        if (pressedKey === "ArrowRight" || pressedKey === "Tab") {
             if (this.focussedLetterIndex === -1) {
                 this.focussedLetterIndex = -1;
             } else if (this.focussedLetterIndex === this.targetNameString.length - 1) {
@@ -103,6 +104,10 @@ export class GameScreenComponent implements OnInit {
 
                 this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex - 1);
             }
+        }
+
+        if (pressedKey === "Delete") {
+            guessToUpdate?.letters[this.focussedLetterIndex].deleteValue();
         }
 
         // Handle enter
