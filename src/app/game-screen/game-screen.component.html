@@ -5,7 +5,7 @@
                 <ng-container *ngIf="guessNumber == gIndex + 1; else notCurrentGuess">
                     <div class="d-flex" #letterBoxesRef>
                         <span *ngIf="focussedLetterIndex === -1"
-                            class="text-center d-flex align-items-center justify-content-center text-white fs-3">←</span>
+                            class="text-center d-flex align-items-center justify-content-center text-white fs-3">⏎</span>
                         <div *ngFor="let letter of guess.letters; let lIndex = index" [id]="'g' + gIndex + 'l' + lIndex"
                             class="m-2 p-2 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
                             [ngClass]="{'border border-success border-4': hasFoundWord === true}"
@@ -13,7 +13,7 @@
                             {{ letter.value | uppercase }}
                         </div>
                         <span *ngIf="focussedLetterIndex === -1"
-                            class="text-center d-flex align-items-center justify-content-center fs-3">←</span>
+                            class="text-center d-flex align-items-center justify-content-center fs-3">⏎</span>
                     </div>
                 </ng-container>
                 <ng-template #notCurrentGuess>
