@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, Query, ViewChild, Renderer2, HostListener, ChangeDetectorRef } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Guess } from '../domain/guess';
+import { generationService } from '../services/generationService'
 
 @Component({
     selector: 'pok-game-screen',
@@ -9,36 +10,9 @@ import { Guess } from '../domain/guess';
 })
 export class GameScreenComponent implements OnInit {
 
-    pokemon: string[] = [
-        "BULBASAUR", "IVYSAUR", "VENUSAUR", "CHARMANDER", "CHARMELEON", "CHARIZARD",
-        "SQUIRTLE", "WARTORTLE", "BLASTOISE", "CATERPIE", "METAPOD", "BUTTERFREE",
-        "WEEDLE", "KAKUNA", "BEEDRILL", "PIDGEY", "PIDGEOTTO", "PIDGEOT",
-        "RATTATA", "RATICATE", "SPEAROW", "FEAROW", "EKANS", "ARBOK",
-        "PIKACHU", "RAICHU", "SANDSHREW", "SANDSLASH", "NIDORAN", "NIDORINA",
-        "NIDOQUEEN", "NIDORINO", "NIDOKING", "CLEFAIRY", "CLEFABLE",
-        "VULPIX", "NINETALES", "JIGGLYPUFF", "WIGGLYTUFF", "ZUBAT", "GOLBAT",
-        "ODDISH", "GLOOM", "VILEPLUME", "PARAS", "PARASECT", "VENONAT",
-        "VENOMOTH", "DIGLETT", "DUGTRIO", "MEOWTH", "PERSIAN", "PSYDUCK",
-        "GOLDUCK", "MANKEY", "PRIMEAPE", "GROWLITHE", "ARCANINE", "POLIWAG",
-        "POLIWHIRL", "POLIWRATH", "ABRA", "KADABRA", "ALAKAZAM", "MACHOP",
-        "MACHOKE", "MACHAMP", "BELLSPROUT", "WEEPINBELL", "VICTREEBEL", "TENTACOOL",
-        "TENTACRUEL", "GEODUDE", "GRAVELER", "GOLEM", "PONYTA", "RAPIDASH",
-        "SLOWPOKE", "SLOWBRO", "MAGNEMITE", "MAGNETON", "FARFETCHD", "DODUO",
-        "DODRIO", "SEEL", "DEWGONG", "GRIMER", "MUK", "SHELLDER",
-        "CLOYSTER", "GASTLY", "HAUNTER", "GENGAR", "ONIX", "DROWZEE",
-        "HYPNO", "KRABBY", "KINGLER", "VOLTORB", "ELECTRODE", "EXEGGCUTE",
-        "EXEGGUTOR", "CUBONE", "MAROWAK", "HITMONLEE", "HITMONCHAN", "LICKITUNG",
-        "KOFFING", "WEEZING", "RHYHORN", "RHYDON", "CHANSEY", "TANGELA",
-        "KANGASKHAN", "HORSEA", "SEADRA", "GOLDEEN", "SEAKING", "STARYU",
-        "STARMIE", "MRMIME", "SCYTHER", "JYNX", "ELECTABUZZ", "MAGMAR",
-        "PINSIR", "TAUROS", "MAGIKARP", "GYARADOS", "LAPRAS", "DITTO",
-        "EEVEE", "VAPOREON", "JOLTEON", "FLAREON", "PORYGON", "OMANYTE",
-        "OMASTAR", "KABUTO", "KABUTOPS", "AERODACTYL", "SNORLAX", "ARTICUNO",
-        "ZAPDOS", "MOLTRES", "DRATINI", "DRAGONAIR", "DRAGONITE", "MEWTWO",
-        "MEW"
-    ];
-
-    targetName$ = new BehaviorSubject<string[]>([]);
+    pokemon: string[] = [];
+    generations: number[] = [];
+    targetName$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     targetNameString: string = "";
     guesses: Guess[] = [];
     guessNumber: number = 1;
@@ -46,12 +20,14 @@ export class GameScreenComponent implements OnInit {
     focussedLetterIndex: number | null = null;
     focussedGuessIndex: number | null = null;
     showTargetName: boolean = false;
+    generationService = new generationService();
 
     @ViewChild('letterBoxesRef', { read: ElementRef }) letterBoxesRef!: ElementRef;
 
     constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
     ngOnInit(): void {
+        this.pokemon = this.generationService.getPokemonByGeneration([1, 2])
         this.resetGame();
     }
 
@@ -116,7 +92,7 @@ export class GameScreenComponent implements OnInit {
             console.log(currentGuess.getValue().toUpperCase());
 
             if (currentGuess.lettersNotFilled === 0 && currentGuess.isCorrect) {
-                this.blurAllLetterBoxes(); // Make sure border styles are removed so that the succes borders apply correctly to the all current guess boxed.
+                this.blurAllLetterBoxes(); // Make sure border styles are removed so that the succes borders apply correctly to the all current guess boxes.
                 this.hasFoundWord = true;
             }
             else if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
@@ -235,15 +211,6 @@ export class GameScreenComponent implements OnInit {
         if (/^[A-Za-z]$/.test(char)) {
             return true;
         }
-
-        return false;
-    }
-
-
-
-
-    private isRealPokemon(): boolean {
-
 
         return false;
     }
