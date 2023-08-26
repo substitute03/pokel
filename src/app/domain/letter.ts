@@ -26,4 +26,4 @@ export class Letter {
     }
 }
 
-export type MatchType = 'exact' | 'fuzzy' | 'none' | 'unknown';
+export type MatchType = 'exact' | 'fuzzy' | 'none' | 'game_over' | 'unknown';

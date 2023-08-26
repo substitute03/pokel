@@ -76,6 +76,9 @@ export class Guess {
         if (this.letters.filter(l => l.matchType === "exact").length === this.targetName.length) {
             return true;
         }
+        else if (this.guessNumber === 6) {
+            this.letters.forEach(l => l.matchType = 'game_over')
+        }
 
         return false;
     }
