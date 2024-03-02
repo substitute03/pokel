@@ -1,14 +1,29 @@
 <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="d-flex flex-column align-items-center">
+        <img class="img-fluid" style="width:250px" src="../../assets/pokel.png">
+        <div class="form-check">
+            <label (click)="addGeneration($event, 1)" class="form-check-label" for="gen1CheckBox">
+                <h6 class="mb-0" *ngIf="generations.includes(1)">Generation 1 ✔</h6>
+                <h6 *ngIf="!generations.includes(1)">Generation 1 ❌</h6>
+            </label>
+        </div>
+        <div class="form-check">
+            <label (click)="addGeneration($event, 2)" class="form-check-label" for="gen2CheckBox">
+                <h6 *ngIf="generations.includes(2)">Generation 2 ✔</h6>
+                <h6 *ngIf="!generations.includes(2)">Generation 2 ❌</h6>
+            </label>
+        </div>
+
         <ng-container *ngIf="guesses">
             <ng-container *ngFor="let guess of guesses; let gIndex = index">
                 <ng-container *ngIf="guessNumber == gIndex + 1; else notCurrentGuess">
                     <div class="d-flex" #letterBoxesRef>
                         <span *ngIf="focussedLetterIndex === -1"
                             class="text-center d-flex align-items-center justify-content-center text-white fs-3">⏎</span>
-                        <div *ngFor="let letter of guess.letters; let lIndex = index" [id]="'g' + gIndex + 'l' + lIndex"
+                        <div current-guess *ngFor="let letter of guess.letters; let lIndex = index"
+                            [id]="'g' + gIndex + 'l' + lIndex"
                             class="m-2 p-2 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
-                            [ngClass]="{'border border-success border-4': hasFoundWord === true}"
+                            [ngClass]="{'border border-success border-5': hasFoundWord === true}"
                             (click)="focusLetterBox(gIndex, lIndex)">
                             {{ letter.value | uppercase }}
                         </div>
@@ -32,9 +47,8 @@
                 </ng-template>
             </ng-container>
         </ng-container>
-        <h4 *ngIf="hasFoundWord === true" class="mt-2">'Mon found! 🎉</h4>
-        <button *ngIf="hasFoundWord === true" class="btn btn-danger mt-3" type="button" (click)="resetGame()">Play
-            again</button>
-        <h4 *ngIf="showTargetName">{{targetNameString}}</h4>
+        <h4 *ngIf="hasFoundWord" class="mt-2">'Mon found! 🎉</h4>
+        <button class="btn btn-danger btn-lg mt-3" type="button" (click)="resetGame()">Play again</button>
+        <h4 class="mt-2" *ngIf="gameOver && hasFoundWord === false">{{targetNameString}}</h4>
     </div>
 </div>
