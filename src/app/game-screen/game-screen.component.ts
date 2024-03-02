@@ -1,9 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, HostListener, ChangeDetectorRef } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Guess } from '../domain/guess';
 import { generationService } from '../services/generationService'
-import { waitForAsync } from '@angular/core/testing';
 
 @Component({
     selector: 'pok-game-screen',
@@ -28,6 +26,7 @@ export class GameScreenComponent implements OnInit {
     focussedLetterIndex: number | null = null;
     focussedGuessIndex: number | null = null;
     generationService = new generationService();
+    evaluatingGuess: boolean = false;
 
     @ViewChild('letterBoxesRef', { read: ElementRef }) letterBoxesRef!: ElementRef;
 
@@ -95,6 +94,10 @@ export class GameScreenComponent implements OnInit {
 
         // Handle enter
         else if (pressedKey === "Enter") {
+            if (this.evaluatingGuess) {
+                return
+            }
+
             const letterBoxes = this.letterBoxesRef.nativeElement
                 .querySelectorAll('[current-guess]');
 
@@ -117,9 +120,9 @@ export class GameScreenComponent implements OnInit {
                     return;
                 }
 
-
                 letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
                     setTimeout(() => {
+                        this.evaluatingGuess = true; // This is to stop double presses of enter while the animation occurs (which will skip guesses). Set back to false below.
                         letterBox.classList.add('flip');
                         if (index === letterBoxes.length - 1) {
                             // Animation is complete, move to the next guess
@@ -129,6 +132,7 @@ export class GameScreenComponent implements OnInit {
                                     this.focussedGuessIndex++;
                                     this.focussedLetterIndex = 0;
                                     this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
+                                    this.evaluatingGuess = false; // Setting it back to false here seems to set it the false at the correct time.
                                 }
                             }, 1000); // Adjust the delay as needed
                         }
@@ -268,9 +272,5 @@ export class GameScreenComponent implements OnInit {
         }
 
         return false;
-    }
-
-    private sleep(delay: number) {
-        return new Promise((resolve) => setTimeout(resolve, delay));
     }
 }
