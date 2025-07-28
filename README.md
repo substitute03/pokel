@@ -1,3 +1,3 @@
 # Pokel
 
-Inspired by Wordle—guess the Pokémon by entering Pokémon names. Your guesses can be any length, but must be no longer than the Pokémon name you are trying to guess, and must be real Pokémon names. Currently includes generations 1 and/or 2.
+Inspired by Wordle. Guess the Pokémon by entering Pokémon names. Your guesses can be any length, and can be placed anywhere in the boxes (you don't need to start your guess in box 1), but each guess must be a real Pokémon name from the generation/s you have selected.
