@@ -1,0 +1,48 @@
+@keyframes flip {
+    from {
+      transform: rotateX(0deg);
+    }
+    to {
+      transform: rotateX(360deg);
+    }
+  }
+  
+  @keyframes flip-reverse {
+    from {
+      transform: rotateX(360deg);
+    }
+    to {
+      transform: rotateX(0deg);
+    }
+  }
+  
+  .flip {
+    animation: flip 1s ease-in-out forwards;
+  }
+  
+  .flip-reverse {
+    animation: flip-reverse 1s ease-in-out forwards;
+  }
+  
+  @keyframes shiver {
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(5deg);
+    }
+    50% {
+      transform: rotate(-5deg);
+    }
+    75% {
+      transform: rotate(5deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+  
+  .shiver {
+    animation: shiver 0.5s ease-in-out forwards; /* Adjust duration and timing function as needed */
+  }
+  

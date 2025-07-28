@@ -1,7 +1,8 @@
-import { Component, ElementRef, OnInit, Query, ViewChild, Renderer2, HostListener, ChangeDetectorRef } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Component, ElementRef, OnInit, ViewChild, HostListener, ChangeDetectorRef } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { Guess } from '../domain/guess';
 import { generationService } from '../services/generationService'
+import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'pok-game-screen',
@@ -11,23 +12,24 @@ import { generationService } from '../services/generationService'
 export class GameScreenComponent implements OnInit {
 
     pokemon: string[] = [];
-    generations: number[] = [];
+    generations: number[] = [1];
     targetName$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     targetNameString: string = "";
     guesses: Guess[] = [];
     guessNumber: number = 1;
     hasFoundWord: boolean = false;
+    gameOver: boolean = false;
     focussedLetterIndex: number | null = null;
     focussedGuessIndex: number | null = null;
-    showTargetName: boolean = false;
     generationService = new generationService();
+    evaluatingGuess: boolean = false;
 
     @ViewChild('letterBoxesRef', { read: ElementRef }) letterBoxesRef!: ElementRef;
 
     constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
     ngOnInit(): void {
-        this.pokemon = this.generationService.getPokemonByGeneration([1, 2])
+        this.pokemon = this.generationService.getPokemonByGeneration(this.generations)
         this.resetGame();
     }
 
@@ -88,29 +90,59 @@ export class GameScreenComponent implements OnInit {
 
         // Handle enter
         else if (pressedKey === "Enter") {
+            if (this.evaluatingGuess) {
+                return
+            }
+
+            const letterBoxes = this.letterBoxesRef.nativeElement
+                .querySelectorAll('[current-guess]');
+
+            letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
+                letterBox.classList.remove('shiver');
+            });
+
+            event.preventDefault();
             const currentGuess: Guess = this.getCurrentGuess();
-            console.log(currentGuess.getValue().toUpperCase());
 
             if (currentGuess.lettersNotFilled === 0 && currentGuess.isCorrect) {
-                this.blurAllLetterBoxes(); // Make sure border styles are removed so that the succes borders apply correctly to the all current guess boxes.
+                this.blurAllLetterBoxes();
                 this.hasFoundWord = true;
-            }
-            else if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
-                currentGuess.isCorrect; // This will evaluate the guess and set the letter match types.
+                this.gameOver = true;
+            } else if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
+                currentGuess.isCorrect;
 
                 if (this.guessNumber === 6) {
-                    this.showTargetName = true;
+                    this.gameOver = true;
                     return;
                 }
 
-                this.guessNumber++;
-                this.focussedGuessIndex++;
-                this.focussedLetterIndex = 0;
-
-                // Focus the first letter box of the next guess row.
-                this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
+                letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
+                    setTimeout(() => {
+                        this.evaluatingGuess = true; // This is to stop double presses of enter while the animation occurs (which will skip guesses). Set back to false below.
+                        letterBox.classList.add('flip');
+                        if (index === letterBoxes.length - 1) {
+                            // Animation is complete, move to the next guess
+                            setTimeout(() => {
+                                if (this.focussedGuessIndex !== null) { // Check if focussedGuessIndex is not null
+                                    this.guessNumber++;
+                                    this.focussedGuessIndex++;
+                                    this.focussedLetterIndex = 0;
+                                    this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
+                                    this.evaluatingGuess = false; // Setting it back to false here seems to set it the false at the correct time.
+                                }
+                            }, 1000); // Adjust the delay as needed
+                        }
+                    }, index * 100); // Adjust the delay as needed
+                });
             }
-
+            else if (!this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
+                const letterBoxes = this.letterBoxesRef.nativeElement.querySelectorAll('[current-guess]');
+                letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
+                    setTimeout(() => {
+                        letterBox.classList.add('shiver');
+                    }, index * 0.5); // Adjust the delay as needed
+                });
+            }
         }
 
         // Handle valid key press
@@ -196,12 +228,72 @@ export class GameScreenComponent implements OnInit {
         }
     }
 
+
+
+    public toggleGeneration(event: Event, generationNumber: number, dropdown?: NgbDropdown): void {
+        event.preventDefault();
+        event.stopPropagation();
+
+        // Don't allow deselecting the last generation
+        if (this.generations.length === 1 && this.generations.includes(generationNumber)) {
+            return;
+        }
+
+        if (this.generations.includes(generationNumber)) {
+            // Remove generation
+            this.generations = this.generations.filter(g => g !== generationNumber);
+        } else {
+            // Add generation
+            this.generations.push(generationNumber);
+        }
+
+        // Sort generations for consistent display
+        this.generations.sort();
+        this.resetGame();
+
+        // Keep dropdown open
+        if (dropdown) {
+            setTimeout(() => {
+                dropdown.open();
+            }, 0);
+        }
+    }
+
+    public getSelectedGenerationsText(): string {
+        if (this.generations.length === 0) {
+            return 'None';
+        }
+
+        const genTexts = this.generations.map(g => `${g}`);
+        if (genTexts.length === 1) {
+            return genTexts[0];
+        } else if (genTexts.length === 2) {
+            return genTexts.join(' & ');
+        } else {
+            const last = genTexts.pop();
+            return genTexts.join(', ') + ' & ' + last;
+        }
+    }
+
+    public resetToGen1(event: Event, dropdown?: NgbDropdown): void {
+        event.preventDefault();
+        this.generations = [1];
+        this.resetGame();
+
+        // Close dropdown after reset
+        if (dropdown) {
+            dropdown.close();
+        }
+    }
+
     public resetGame(): void {
+        this.pokemon = this.generationService.getPokemonByGeneration(this.generations);
         this.targetName$.next(this.getTargetName());
         this.targetNameString = this.targetName$.value.filter(l => l !== "").map(l => l).join("");
         this.setInitialGuesses();
         this.guessNumber = 1;
         this.hasFoundWord = false;
+        this.gameOver = false;
         this.focussedGuessIndex = 0;
         this.focussedLetterIndex = 0;
         this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);

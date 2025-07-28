@@ -1,14 +1,55 @@
 <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="d-flex flex-column align-items-center">
+
+        <img class="img-fluid" style="width:250px" src="../../assets/pokel.png">
+
+        <!-- Generation Selection Dropdown -->
+        <div class="dropdown mb-3" ngbDropdown #generationDropdown="ngbDropdown">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="generationDropdown"
+                ngbDropdownToggle>
+                Generations ({{generations.length}} selected)
+            </button>
+            <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="generationDropdown">
+                <li *ngFor="let gen of [1,2,3,4,5,6,7,8,9]">
+                    <a class="dropdown-item d-flex align-items-center" href="#"
+                        (click)="toggleGeneration($event, gen, generationDropdown)">
+                        <span class="me-2">
+                            <span [ngClass]="generations.includes(gen) ? 'text-success fw-bold' : 'text-muted'">
+                                {{generations.includes(gen) ? '✓' : '○'}}
+                            </span>
+                        </span>
+                        Generation {{gen}}
+                    </a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a class="dropdown-item text-primary" href="#" (click)="resetToGen1($event, generationDropdown)">
+                        <i class="me-2">🔄</i>
+                        Reset to Gen 1
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Selected Generations Display -->
+        <div class="mb-3">
+            <small class="text-muted">
+                Generations: {{getSelectedGenerationsText()}}
+            </small>
+        </div>
+
         <ng-container *ngIf="guesses">
             <ng-container *ngFor="let guess of guesses; let gIndex = index">
                 <ng-container *ngIf="guessNumber == gIndex + 1; else notCurrentGuess">
                     <div class="d-flex" #letterBoxesRef>
                         <span *ngIf="focussedLetterIndex === -1"
                             class="text-center d-flex align-items-center justify-content-center text-white fs-3">⏎</span>
-                        <div *ngFor="let letter of guess.letters; let lIndex = index" [id]="'g' + gIndex + 'l' + lIndex"
+                        <div current-guess *ngFor="let letter of guess.letters; let lIndex = index"
+                            [id]="'g' + gIndex + 'l' + lIndex"
                             class="m-2 p-2 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
-                            [ngClass]="{'border border-success border-4': hasFoundWord === true}"
+                            [ngClass]="{'border border-success border-5': hasFoundWord === true}"
                             (click)="focusLetterBox(gIndex, lIndex)">
                             {{ letter.value | uppercase }}
                         </div>
@@ -32,9 +73,8 @@
                 </ng-template>
             </ng-container>
         </ng-container>
-        <h4 *ngIf="hasFoundWord === true" class="mt-2">'Mon found! 🎉</h4>
-        <button *ngIf="hasFoundWord === true" class="btn btn-danger mt-3" type="button" (click)="resetGame()">Play
-            again</button>
-        <h4 *ngIf="showTargetName">{{targetNameString}}</h4>
+        <h4 *ngIf="hasFoundWord" class="mt-2">'Mon found! 🎉</h4>
+        <button class="btn btn-danger btn-lg mt-3" type="button" (click)="resetGame()">Play again</button>
+        <h4 class="mt-2" *ngIf="gameOver && hasFoundWord === false">{{targetNameString}}</h4>
     </div>
 </div>
