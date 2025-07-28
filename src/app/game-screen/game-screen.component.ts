@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild, HostListener, ChangeDetectorR
 import { BehaviorSubject } from 'rxjs';
 import { Guess } from '../domain/guess';
 import { generationService } from '../services/generationService'
+import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'pok-game-screen',
@@ -11,12 +12,7 @@ import { generationService } from '../services/generationService'
 export class GameScreenComponent implements OnInit {
 
     pokemon: string[] = [];
-    generations: number[] = [1]; get gen1Selected(): boolean {
-        return this.generations.includes(1);
-    }
-    get gen2Selected(): boolean {
-        return this.generations.includes(2);
-    }
+    generations: number[] = [1];
     targetName$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     targetNameString: string = "";
     guesses: Guess[] = [];
@@ -232,24 +228,61 @@ export class GameScreenComponent implements OnInit {
         }
     }
 
-    public addGeneration(event: Event, generationNumber: number) {
-        // Don't allow the generations array to be empty
-        if (this.generations.length === 1 && this.generations[0] === generationNumber) {
-            console.log(this.generations);
+
+
+    public toggleGeneration(event: Event, generationNumber: number, dropdown?: NgbDropdown): void {
+        event.preventDefault();
+        event.stopPropagation();
+
+        // Don't allow deselecting the last generation
+        if (this.generations.length === 1 && this.generations.includes(generationNumber)) {
             return;
         }
 
-        // If the generation is not in the array, push it
-        if (!this.generations.find(g => g === generationNumber)) {
+        if (this.generations.includes(generationNumber)) {
+            // Remove generation
+            this.generations = this.generations.filter(g => g !== generationNumber);
+        } else {
+            // Add generation
             this.generations.push(generationNumber);
-            this.resetGame();
         }
-        else {
-            this.generations = generationNumber === 1 ? [2]
-                : generationNumber === 2 ? [1]
-                    : [1, 2];
 
-            this.resetGame();
+        // Sort generations for consistent display
+        this.generations.sort();
+        this.resetGame();
+
+        // Keep dropdown open
+        if (dropdown) {
+            setTimeout(() => {
+                dropdown.open();
+            }, 0);
+        }
+    }
+
+    public getSelectedGenerationsText(): string {
+        if (this.generations.length === 0) {
+            return 'None';
+        }
+
+        const genTexts = this.generations.map(g => `${g}`);
+        if (genTexts.length === 1) {
+            return genTexts[0];
+        } else if (genTexts.length === 2) {
+            return genTexts.join(' & ');
+        } else {
+            const last = genTexts.pop();
+            return genTexts.join(', ') + ' & ' + last;
+        }
+    }
+
+    public resetToGen1(event: Event, dropdown?: NgbDropdown): void {
+        event.preventDefault();
+        this.generations = [1];
+        this.resetGame();
+
+        // Close dropdown after reset
+        if (dropdown) {
+            dropdown.close();
         }
     }
 
