@@ -40,7 +40,7 @@
             </small>
         </div>
 
-        <ng-container *ngIf="guesses">
+        <ng-container *ngIf="guesses$ | async as guesses">
             <ng-container *ngFor="let guess of guesses; let gIndex = index">
                 <ng-container *ngIf="guessNumber == gIndex + 1; else notCurrentGuess">
                     <div class="d-flex" #letterBoxesRef>

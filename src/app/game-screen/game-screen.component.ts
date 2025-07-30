@@ -15,7 +15,7 @@ export class GameScreenComponent implements OnInit {
     generations: number[] = [1];
     targetName$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     targetNameString: string = "";
-    guesses: Guess[] = [];
+    guesses$: BehaviorSubject<Guess[]> = new BehaviorSubject<Guess[]>([]);
     guessNumber: number = 1;
     hasFoundWord: boolean = false;
     gameOver: boolean = false;
@@ -39,7 +39,7 @@ export class GameScreenComponent implements OnInit {
             return;
         }
         const pressedKey = event.key;
-        let guessToUpdate: Guess | undefined = this.guesses
+        let guessToUpdate: Guess | undefined = this.guesses$.value
             .find(g => g.guessNumber === this.guessNumber);
 
         // Handle left arrow
@@ -82,10 +82,14 @@ export class GameScreenComponent implements OnInit {
 
                 this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex - 1);
             }
+            // Trigger change detection for BehaviorSubject
+            this.guesses$.next([...this.guesses$.value]);
         }
 
         if (pressedKey === "Delete") {
             guessToUpdate?.letters[this.focussedLetterIndex].deleteValue();
+            // Trigger change detection for BehaviorSubject
+            this.guesses$.next([...this.guesses$.value]);
         }
 
         // Handle enter
@@ -155,6 +159,9 @@ export class GameScreenComponent implements OnInit {
             guessToUpdate?.letters[this.focussedLetterIndex]
                 .setValue(pressedKey);
 
+            // Trigger change detection for BehaviorSubject
+            this.guesses$.next([...this.guesses$.value]);
+
             // if at the last index, set focuessedindex to -1 so the extra icon appears after the guess letterbox.
             const isLastLetter: boolean =
                 this.focussedLetterIndex === this.targetName$.value.length! - 1;
@@ -221,15 +228,16 @@ export class GameScreenComponent implements OnInit {
     }
 
     private getCurrentGuess(): Guess {
-        return this.guesses
+        return this.guesses$.value
             .find(g => g.guessNumber === this.guessNumber)!;
     }
 
     private setInitialGuesses(): void {
-        this.guesses = [];
+        const guesses: Guess[] = [];
         for (let i = 1; i <= 6; i++) {
-            this.guesses.push(new Guess(this.targetName$.value, i))
+            guesses.push(new Guess(this.targetName$.value, i))
         }
+        this.guesses$.next(guesses);
     }
 
     public toggleGeneration(event: Event, generationNumber: number, dropdown?: NgbDropdown): void {
