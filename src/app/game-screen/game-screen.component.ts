@@ -129,6 +129,7 @@ export class GameScreenComponent implements OnInit {
                                     this.focussedLetterIndex = 0;
                                     this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
                                     this.evaluatingGuess = false; // Setting it back to false here seems to set it the false at the correct time.
+                                    this.changeDetectorRef.detectChanges();
                                 }
                             }, 1000); // Adjust the delay as needed
                         }
@@ -147,6 +148,10 @@ export class GameScreenComponent implements OnInit {
 
         // Handle valid key press
         else if (this.isValidCharacter(pressedKey)) {
+            if (this.evaluatingGuess) {
+                return;
+            }
+
             guessToUpdate?.letters[this.focussedLetterIndex]
                 .setValue(pressedKey);
 
@@ -161,7 +166,6 @@ export class GameScreenComponent implements OnInit {
             else {
                 this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex + 1)
             }
-
         };
     }
 
@@ -227,8 +231,6 @@ export class GameScreenComponent implements OnInit {
             this.guesses.push(new Guess(this.targetName$.value, i))
         }
     }
-
-
 
     public toggleGeneration(event: Event, generationNumber: number, dropdown?: NgbDropdown): void {
         event.preventDefault();
