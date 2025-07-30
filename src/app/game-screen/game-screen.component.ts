@@ -113,7 +113,11 @@ export class GameScreenComponent implements OnInit {
                 this.hasFoundWord = true;
                 this.gameOver = true;
             } else if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
-                currentGuess.isCorrect;
+                // Evaluate the guess to set matchTypes for all letters
+                currentGuess.evaluateGuess();
+
+                // Force evaluation and update the BehaviorSubject to trigger change detection
+                this.guesses$.next([...this.guesses$.value]);
 
                 if (this.guessNumber === 6) {
                     this.gameOver = true;

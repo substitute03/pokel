@@ -23,6 +23,10 @@ export class Guess {
             .filter(l => l.value === "").length;
     }
 
+    public evaluateGuess(): void {
+        this.evaluate();
+    }
+
     constructor(targetName: string[], guessNumber: number) {
         this.letters = targetName.map(() => new Letter(""));
         this.targetName = targetName.map(char => char).join("");;
