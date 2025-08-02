@@ -4,7 +4,7 @@
         <img class="img-fluid" style="width:250px" src="assets/pokel.png">
 
         <!-- Generation Selection Dropdown -->
-        <div class="dropdown mb-3" ngbDropdown #generationDropdown="ngbDropdown">
+        <div class="dropdown mb-2 mt-2" ngbDropdown #generationDropdown="ngbDropdown">
             <button class="btn btn-outline-primary dropdown-toggle" type="button" id="generationDropdown"
                 ngbDropdownToggle>
                 Generations ({{generations.length}} selected)
@@ -34,7 +34,7 @@
         </div>
 
         <!-- Selected Generations Display -->
-        <div class="mb-3">
+        <div class="mb-5">
             <small class="text-muted">
                 Generations: {{getSelectedGenerationsText()}}
             </small>
@@ -48,7 +48,7 @@
                             class="text-center d-flex align-items-center justify-content-center text-white fs-3">⏎</span>
                         <div current-guess *ngFor="let letter of guess.letters; let lIndex = index"
                             [id]="'g' + gIndex + 'l' + lIndex"
-                            class="m-2 p-2 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
+                            class="m-1 p-1 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
                             [ngClass]="{'border border-success border-5': hasFoundWord === true}"
                             (click)="focusLetterBox(gIndex, lIndex)">
                             {{ letter.value | uppercase }}
@@ -60,7 +60,7 @@
                 <ng-template #notCurrentGuess>
                     <div class="d-flex">
                         <div *ngFor="let letter of guess.letters; let lIndex = index" [id]="'g' + gIndex + 'l' + lIndex"
-                            class="form-control m-2 p-2 square-box d-flex align-items-center justify-content-center border"
+                            class="form-control m-1 p-1 square-box d-flex align-items-center justify-content-center border"
                             [ngClass]="
                             {   'border-4': letter.matchType !== 'unknown',
                                 'border-secondary': letter.matchType === 'none',
@@ -74,7 +74,7 @@
             </ng-container>
         </ng-container>
         <h4 *ngIf="hasFoundWord" class="mt-2">'Mon found! 🎉</h4>
-        <button class="btn btn-danger btn-lg mt-3" type="button" (click)="resetGame()">Play again</button>
+        <button class="btn btn-danger btn-lg mt-4" type="button" (click)="resetGame()">Play again</button>
         <h4 class="mt-2" *ngIf="gameOver && hasFoundWord === false">{{targetNameString}}</h4>
     </div>
 </div>
