@@ -35,7 +35,7 @@ export class GameScreenComponent implements OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onWindowKeyDown(event: KeyboardEvent) {
-        if (this.focussedGuessIndex === null || this.focussedLetterIndex === null) {
+        if (this.focussedGuessIndex === null || this.focussedLetterIndex === null || this.hasFoundWord) {
             return;
         }
         const pressedKey = event.key;
