@@ -1,62 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { Guess } from './guess';
 import { generationService } from '../services/generationService';
-
-export interface GameState {
-    pokemon: string[];
-    generations: number[];
-    targetName: string[];
-    targetNameString: string;
-    guesses: Guess[];
-    guessNumber: number;
-    hasFoundWord: boolean;
-    gameOver: boolean;
-    focussedLetterIndex: number | null;
-    focussedGuessIndex: number | null;
-    evaluatingGuess: boolean;
-}
-
-export interface ArrowNavigationResult {
-    newGuessIndex: number;
-    newLetterIndex: number;
-}
-
-export interface RightArrowNavigationResult extends ArrowNavigationResult {
-    navigatedPastFinalBox: boolean;
-}
-
-export interface BackspaceResult {
-    deletedIndex: number;
-    newGuessIndex: number;
-    newLetterIndex: number;
-    shouldUpdateGuesses: boolean;
-}
-
-export interface DeleteResult {
-    deletedIndex: number;
-    shouldUpdateGuesses: boolean;
-}
-
-export interface ValidCharacterResult {
-    success: boolean;
-    newGuessIndex: number;
-    newLetterIndex: number;
-    isLastLetter: boolean;
-    shouldUpdateGuesses: boolean;
-}
-
-export interface EnterResult {
-    isValidPokemon: boolean;
-    currentGuess: Guess | null;
-    isValidGuess: boolean;
-}
-
-export interface GuessResult {
-    gameState: 'correct' | 'final' | 'continue';
-    shouldUpdateFocus: boolean;
-    newGuessIndex: number;
-    newLetterIndex: number;
-}
+import { GameState, ArrowNavigationResult, RightArrowNavigationResult, BackspaceResult, DeleteResult, ValidCharacterResult, EnterResult, GuessResult } from '../interfaces/game';
 
 export class Game {
     private gameState: GameState;
@@ -258,25 +203,6 @@ export class Game {
     public handleValidCharacter(pressedKey: string): ValidCharacterResult {
         const guessToUpdate = this.gameState.guesses
             .find(g => g.guessNumber === this.gameState.guessNumber);
-
-        // Make sure the previous and next letters are not empty (except for the first box)
-        if (this.gameState.focussedLetterIndex! > 0) {
-            const previousLetter = guessToUpdate?.letters[this.gameState.focussedLetterIndex! - 1];
-            const nextLetter = guessToUpdate?.letters[this.gameState.focussedLetterIndex! + 1];
-
-            // Don't allow typing if the previous box, or the next box, is empty and there are already letters in the guess
-            if ((!previousLetter || !previousLetter.value || previousLetter.value.trim() === '') &&
-                (!nextLetter || !nextLetter.value || nextLetter.value.trim() === '') &&
-                guessToUpdate?.lettersFilled !== undefined && guessToUpdate?.lettersFilled > 0) {
-                return {
-                    success: false,
-                    newGuessIndex: this.gameState.focussedGuessIndex!,
-                    newLetterIndex: this.gameState.focussedLetterIndex!,
-                    isLastLetter: false,
-                    shouldUpdateGuesses: false
-                };
-            }
-        }
 
         // Set the letter value
         guessToUpdate?.letters[this.gameState.focussedLetterIndex!].setValue(pressedKey);
