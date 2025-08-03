@@ -22,7 +22,7 @@ export interface ArrowNavigationResult {
 }
 
 export interface RightArrowNavigationResult extends ArrowNavigationResult {
-    shouldBlur: boolean;
+    navigatedPastFinalBox: boolean;
 }
 
 export interface BackspaceResult {
@@ -41,7 +41,7 @@ export interface ValidCharacterResult {
     success: boolean;
     newGuessIndex: number;
     newLetterIndex: number;
-    shouldBlur: boolean;
+    isLastLetter: boolean;
     shouldUpdateGuesses: boolean;
 }
 
@@ -210,7 +210,7 @@ export class Game {
         return {
             newGuessIndex: this.gameState.focussedGuessIndex,
             newLetterIndex: newLetterIndex,
-            shouldBlur: shouldBlur
+            navigatedPastFinalBox: shouldBlur
         };
     }
 
@@ -272,7 +272,7 @@ export class Game {
                     success: false,
                     newGuessIndex: this.gameState.focussedGuessIndex!,
                     newLetterIndex: this.gameState.focussedLetterIndex!,
-                    shouldBlur: false,
+                    isLastLetter: false,
                     shouldUpdateGuesses: false
                 };
             }
@@ -289,7 +289,7 @@ export class Game {
                 success: true,
                 newGuessIndex: this.gameState.focussedGuessIndex!,
                 newLetterIndex: -1,
-                shouldBlur: true,
+                isLastLetter: true,
                 shouldUpdateGuesses: true
             };
         } else {
@@ -297,7 +297,7 @@ export class Game {
                 success: true,
                 newGuessIndex: this.gameState.focussedGuessIndex!,
                 newLetterIndex: this.gameState.focussedLetterIndex! + 1,
-                shouldBlur: false,
+                isLastLetter: false,
                 shouldUpdateGuesses: true
             };
         }

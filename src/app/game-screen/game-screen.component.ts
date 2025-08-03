@@ -80,7 +80,7 @@ export class GameScreenComponent implements OnInit {
             this.game.focussedGuessIndex = result.newGuessIndex;
             this.game.focussedLetterIndex = result.newLetterIndex;
 
-            if (result.shouldBlur) {
+            if (result.navigatedPastFinalBox) {
                 this.blurAllLetterBoxes();
             } else {
                 this.focusLetterBox(result.newGuessIndex, result.newLetterIndex);
@@ -164,7 +164,7 @@ export class GameScreenComponent implements OnInit {
                 this.game.guesses$.next([...this.game.guesses$.value]);
             }
 
-            if (result.shouldBlur) {
+            if (result.isLastLetter) {
                 this.blurAllLetterBoxes();
             } else {
                 this.focusLetterBox(result.newGuessIndex, result.newLetterIndex);
