@@ -35,133 +35,166 @@ export class GameScreenComponent implements OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onWindowKeyDown(event: KeyboardEvent) {
-        if (this.focussedGuessIndex === null || this.focussedLetterIndex === null || this.hasFoundWord) {
+        if (this.focussedGuessIndex === null || this.focussedLetterIndex === null || this.hasFoundWord || this.evaluatingGuess) {
             return;
         }
+
         const pressedKey = event.key;
+
+        if (pressedKey === "ArrowLeft") {
+            this.handleLeftArrowPressed();
+        }
+        else if (pressedKey === "ArrowRight" || pressedKey === "Tab") {
+            this.handleRightArrowPressed(event);
+        }
+        else if (pressedKey === "Backspace") {
+            this.handleBackspacePressed();
+        }
+        else if (pressedKey === "Delete") {
+            this.handleDeletePressed();
+        }
+        else if (pressedKey === "Enter") {
+            this.handleEnterPressed(event);
+        }
+        else if (this.isValidCharacter(pressedKey)) {
+            this.handleValidCharacterPressed(pressedKey);
+        }
+    }
+
+    private handleLeftArrowPressed(): void {
+        if (this.focussedLetterIndex === -1) {
+            this.focussedLetterIndex = this.targetNameString.length - 1;
+        } else if (this.focussedLetterIndex === 0) {
+            this.focussedLetterIndex = 0;
+        } else {
+            this.focussedLetterIndex! -= 1;
+        }
+
+        this.focusLetterBox(this.focussedGuessIndex!, this.focussedLetterIndex!);
+    }
+
+    private handleRightArrowPressed(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (this.focussedLetterIndex === -1) {
+            this.focussedLetterIndex = -1;
+        } else if (this.focussedLetterIndex === this.targetNameString.length - 1) {
+            this.focussedLetterIndex = -1;
+            this.blurAllLetterBoxes();
+        } else {
+            this.focussedLetterIndex! += 1;
+        }
+
+        this.focusLetterBox(this.focussedGuessIndex!, this.focussedLetterIndex!);
+    }
+
+    private handleBackspacePressed(): void {
         let guessToUpdate: Guess | undefined = this.guesses$.value
             .find(g => g.guessNumber === this.guessNumber);
 
-        // Handle left arrow
-        if (pressedKey === "ArrowLeft") {
-            if (this.focussedLetterIndex === -1) {
-                this.focussedLetterIndex = this.targetNameString.length - 1;
-            } else if (this.focussedLetterIndex === 0) {
-                this.focussedLetterIndex = 0;
-            } else {
-                this.focussedLetterIndex -= 1;
-            }
-
-            this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
+        if (this.focussedLetterIndex == -1) {
+            guessToUpdate?.letters[this.targetName$.value.length - 1]
+                .deleteValue();
+            this.focusLetterBox(this.focussedGuessIndex!, this.targetName$.value.length - 1)
         }
-        // Handle right arrow
-        if (pressedKey === "ArrowRight" || pressedKey === "Tab") {
-            event.preventDefault();
-            if (this.focussedLetterIndex === -1) {
-                this.focussedLetterIndex = -1;
-            } else if (this.focussedLetterIndex === this.targetNameString.length - 1) {
-                this.focussedLetterIndex = -1;
-                this.blurAllLetterBoxes();
-            } else {
-                this.focussedLetterIndex += 1;
-            }
+        else {
+            guessToUpdate?.letters[this.focussedLetterIndex! - 1]
+                .deleteValue();
 
-            this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
+            this.focusLetterBox(this.focussedGuessIndex!, this.focussedLetterIndex! - 1);
         }
+        // Trigger change detection for BehaviorSubject
+        this.guesses$.next([...this.guesses$.value]);
+    }
 
-        // Handle backspace
-        if (pressedKey === "Backspace") {
-            if (this.focussedLetterIndex == -1) {
-                guessToUpdate?.letters[this.targetName$.value.length - 1]
-                    .deleteValue();
-                this.focusLetterBox(this.focussedGuessIndex, this.targetName$.value.length - 1)
-            }
-            else {
-                guessToUpdate?.letters[this.focussedLetterIndex - 1]
-                    .deleteValue();
+    private handleDeletePressed(): void {
+        let guessToUpdate: Guess | undefined = this.guesses$.value
+            .find(g => g.guessNumber === this.guessNumber);
 
-                this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex - 1);
-            }
-            // Trigger change detection for BehaviorSubject
-            this.guesses$.next([...this.guesses$.value]);
-        }
+        guessToUpdate?.letters[this.focussedLetterIndex!].deleteValue();
+        // Trigger change detection for BehaviorSubject
+        this.guesses$.next([...this.guesses$.value]);
+    }
 
-        if (pressedKey === "Delete") {
-            guessToUpdate?.letters[this.focussedLetterIndex].deleteValue();
-            // Trigger change detection for BehaviorSubject
-            this.guesses$.next([...this.guesses$.value]);
-        }
+    private handleEnterPressed(event: KeyboardEvent): void {
+        const letterBoxes = this.letterBoxesRef.nativeElement
+            .querySelectorAll('[current-guess]');
 
-        // Handle enter
-        else if (pressedKey === "Enter") {
-            if (this.evaluatingGuess) {
-                return
-            }
+        letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
+            letterBox.classList.remove('shiver');
+        });
 
-            const letterBoxes = this.letterBoxesRef.nativeElement
-                .querySelectorAll('[current-guess]');
+        event.preventDefault();
+        const currentGuess: Guess = this.getCurrentGuess();
 
+        if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
             letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
-                letterBox.classList.remove('shiver');
+                letterBox.classList.remove('border-dark');
+                letterBox.classList.remove('border-4');
+                letterBox.classList.add('border-secondary');
             });
 
-            event.preventDefault();
-            const currentGuess: Guess = this.getCurrentGuess();
+            // Evaluate the guess to set matchTypes for all letters
+            currentGuess.evaluateGuess();
 
-            if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
-                // Evaluate the guess to set matchTypes for all letters
-                currentGuess.evaluateGuess();
+            // Force evaluation and update the BehaviorSubject to trigger change detection
+            this.guesses$.next([...this.guesses$.value]);
 
-                // Force evaluation and update the BehaviorSubject to trigger change detection
-                this.guesses$.next([...this.guesses$.value]);
+            letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
+                setTimeout(() => {
+                    this.evaluatingGuess = true; // This is to stop double presses of enter while the animation occurs (which will skip guesses). Set back to false below.
+                    letterBox.classList.add('flip');
+                    if (index === letterBoxes.length - 1) {
+                        // Animation is complete. Move to the next guess
+                        setTimeout(() => {
+                            this.handleGuessResult(currentGuess);
+                        }, 1000); // Adjust the delay as needed
+                    }
+                }, index * 100); // Adjust the delay as needed
+            });
+        }
+        else {
+            // Invalid Pokemon - apply shiver effect
+            letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
+                setTimeout(() => {
+                    letterBox.classList.add('shiver');
+                }, index * 0.5); // Adjust the delay as needed
+            });
+        }
+    }
 
-                letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
-                    setTimeout(() => {
-                        this.evaluatingGuess = true; // This is to stop double presses of enter while the animation occurs (which will skip guesses). Set back to false below.
-                        letterBox.classList.add('flip');
-                        if (index === letterBoxes.length - 1) {
-                            // Animation is complete. Move to the next guess
-                            setTimeout(() => {
-                                this.handleGuessResult(currentGuess);
-                            }, 1000); // Adjust the delay as needed
-                        }
-                    }, index * 100); // Adjust the delay as needed
-                });
-            }
-            else if (!this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
-                const letterBoxes = this.letterBoxesRef.nativeElement.querySelectorAll('[current-guess]');
-                letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
-                    setTimeout(() => {
-                        letterBox.classList.add('shiver');
-                    }, index * 0.5); // Adjust the delay as needed
-                });
+    private handleValidCharacterPressed(pressedKey: string): void {
+        let guessToUpdate: Guess | undefined = this.guesses$.value
+            .find(g => g.guessNumber === this.guessNumber);
+
+        // Check if the previous letter box is empty (except for the first box)
+        if (this.focussedLetterIndex! > 0) {
+            const previousLetter = guessToUpdate?.letters[this.focussedLetterIndex! - 1];
+
+            // Don't allow typing if the previous box is empty and the there are already letters in the guess
+            // This is to ensure that all guesses are continuous strings with no gaps
+            if ((!previousLetter || !previousLetter.value || previousLetter.value.trim() === '') &&
+                guessToUpdate?.lettersFilled !== undefined && guessToUpdate?.lettersFilled > 0) {
+                return;
             }
         }
 
-        // Handle valid key press
-        else if (this.isValidCharacter(pressedKey)) {
-            if (this.evaluatingGuess) {
-                return;
-            }
+        guessToUpdate?.letters[this.focussedLetterIndex!]
+            .setValue(pressedKey);
 
-            guessToUpdate?.letters[this.focussedLetterIndex]
-                .setValue(pressedKey);
+        // Trigger change detection for BehaviorSubject
+        this.guesses$.next([...this.guesses$.value]);
 
-            // Trigger change detection for BehaviorSubject
-            this.guesses$.next([...this.guesses$.value]);
+        // if at the last index, set focuessedindex to -1 so the extra icon appears after the guess letterbox.
+        const isLastLetter: boolean =
+            this.focussedLetterIndex === this.targetName$.value.length! - 1;
 
-            // if at the last index, set focuessedindex to -1 so the extra icon appears after the guess letterbox.
-            const isLastLetter: boolean =
-                this.focussedLetterIndex === this.targetName$.value.length! - 1;
-
-            if (isLastLetter) {
-                this.focussedLetterIndex = -1;
-                this.blurAllLetterBoxes();
-            }
-            else {
-                this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex + 1)
-            }
-        };
+        if (isLastLetter) {
+            this.focussedLetterIndex = -1;
+            this.blurAllLetterBoxes();
+        }
+        else {
+            this.focusLetterBox(this.focussedGuessIndex!, this.focussedLetterIndex! + 1)
+        }
     }
 
     public focusLetterBox(guessIndex: number, letterIndex: number): void {
@@ -247,7 +280,6 @@ export class GameScreenComponent implements OnInit {
 
         // Sort generations for consistent display
         this.generations.sort();
-        this.resetGame();
 
         // Keep dropdown open
         if (dropdown) {
@@ -276,7 +308,6 @@ export class GameScreenComponent implements OnInit {
     public resetToGen1(event: Event, dropdown?: NgbDropdown): void {
         event.preventDefault();
         this.generations = [1];
-        this.resetGame();
 
         // Close dropdown after reset
         if (dropdown) {
