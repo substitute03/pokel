@@ -42,7 +42,7 @@
 
         <ng-container *ngIf="guesses$ | async as guesses">
             <ng-container *ngFor="let guess of guesses; let gIndex = index">
-                <ng-container *ngIf="guessNumber == gIndex + 1; else notCurrentGuess">
+                <ng-container *ngIf="guessNumber == gIndex + 1 && !gameOver; else notCurrentGuess">
                     <div class="d-flex" #letterBoxesRef>
                         <span *ngIf="focussedLetterIndex === -1"
                             class="text-center d-flex align-items-center justify-content-center text-white fs-3">⏎</span>

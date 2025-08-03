@@ -108,37 +108,21 @@ export class GameScreenComponent implements OnInit {
             event.preventDefault();
             const currentGuess: Guess = this.getCurrentGuess();
 
-            if (currentGuess.lettersNotFilled === 0 && currentGuess.isCorrect) {
-                this.blurAllLetterBoxes();
-                this.hasFoundWord = true;
-                this.gameOver = true;
-            } else if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
+            if (this.pokemon.includes(currentGuess.getValue().toUpperCase())) {
                 // Evaluate the guess to set matchTypes for all letters
                 currentGuess.evaluateGuess();
 
                 // Force evaluation and update the BehaviorSubject to trigger change detection
                 this.guesses$.next([...this.guesses$.value]);
 
-                if (this.guessNumber === 6) {
-                    this.gameOver = true;
-                    return;
-                }
-
                 letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
                     setTimeout(() => {
                         this.evaluatingGuess = true; // This is to stop double presses of enter while the animation occurs (which will skip guesses). Set back to false below.
                         letterBox.classList.add('flip');
                         if (index === letterBoxes.length - 1) {
-                            // Animation is complete, move to the next guess
+                            // Animation is complete. Move to the next guess
                             setTimeout(() => {
-                                if (this.focussedGuessIndex !== null) { // Check if focussedGuessIndex is not null
-                                    this.guessNumber++;
-                                    this.focussedGuessIndex++;
-                                    this.focussedLetterIndex = 0;
-                                    this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
-                                    this.evaluatingGuess = false; // Setting it back to false here seems to set it the false at the correct time.
-                                    this.changeDetectorRef.detectChanges();
-                                }
+                                this.handleGuessResult(currentGuess);
                             }, 1000); // Adjust the delay as needed
                         }
                     }, index * 100); // Adjust the delay as needed
@@ -308,6 +292,7 @@ export class GameScreenComponent implements OnInit {
         this.guessNumber = 1;
         this.hasFoundWord = false;
         this.gameOver = false;
+        this.evaluatingGuess = false;
         this.focussedGuessIndex = 0;
         this.focussedLetterIndex = 0;
         this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
@@ -319,5 +304,44 @@ export class GameScreenComponent implements OnInit {
         }
 
         return false;
+    }
+
+    private handleGuessResult(currentGuess: Guess): void {
+        if (currentGuess.isCorrect) {
+            this.handleCorrectGuess();
+        } else if (this.isFinalGuess()) {
+            this.handleFinalGuess();
+        } else {
+            this.moveToNextGuess();
+        }
+    }
+
+    private handleCorrectGuess(): void {
+        this.blurAllLetterBoxes();
+        this.hasFoundWord = true;
+        this.gameOver = true;
+        this.evaluatingGuess = false;
+        this.changeDetectorRef.detectChanges();
+    }
+
+    private handleFinalGuess(): void {
+        this.gameOver = true;
+        this.evaluatingGuess = false;
+        this.changeDetectorRef.detectChanges();
+    }
+
+    private moveToNextGuess(): void {
+        if (this.focussedGuessIndex !== null) {
+            this.guessNumber++;
+            this.focussedGuessIndex++;
+            this.focussedLetterIndex = 0;
+            this.focusLetterBox(this.focussedGuessIndex, this.focussedLetterIndex);
+            this.evaluatingGuess = false;
+            this.changeDetectorRef.detectChanges();
+        }
+    }
+
+    private isFinalGuess(): boolean {
+        return this.guessNumber === 6;
     }
 }
