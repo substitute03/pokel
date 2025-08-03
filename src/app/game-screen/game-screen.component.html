@@ -49,7 +49,7 @@
                         <div current-guess *ngFor="let letter of guess.letters; let lIndex = index"
                             [id]="'g' + gIndex + 'l' + lIndex"
                             class="m-1 p-1 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
-                            [ngClass]="{'border border-success border-5': hasFoundWord === true}"
+                            [ngClass]="{'border border-success border-5': hasFoundWord === true && letter.matchType === 'exact'}"
                             (click)="focusLetterBox(gIndex, lIndex)">
                             {{ letter.value | uppercase }}
                         </div>

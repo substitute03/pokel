@@ -1,5 +1,4 @@
 import { Letter } from "./letter";
-import { MatchType } from "./letter";
 
 export class Guess {
     public readonly letters: Letter[] = [];
@@ -77,11 +76,11 @@ export class Guess {
     private isGuessCorrect(): boolean {
         this.evaluate();
 
-        if (this.letters.filter(l => l.matchType === "exact").length === this.targetName.length) {
+        const guessMatchesTarget = this.letters
+            .filter(l => l.matchType === "exact").length === this.targetName.length;
+
+        if (guessMatchesTarget) {
             return true;
-        }
-        else if (this.guessNumber === 6) {
-            this.letters.forEach(l => l.matchType = 'game_over')
         }
 
         return false;
