@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Guess } from '../domain/guess';
 import { Game } from '../domain/game';
-import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdown, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'pok-game-screen',
@@ -26,8 +26,9 @@ export class GameScreenComponent implements OnInit {
     get evaluatingGuess() { return this.game.evaluatingGuess; }
 
     @ViewChild('letterBoxesRef', { read: ElementRef }) letterBoxesRef!: ElementRef;
+    @ViewChild('helpModal') helpModal!: any;
 
-    constructor(private changeDetectorRef: ChangeDetectorRef) { }
+    constructor(private changeDetectorRef: ChangeDetectorRef, private modalService: NgbModal) { }
 
     ngOnInit(): void {
         this.game.initializeGame();
@@ -265,5 +266,9 @@ export class GameScreenComponent implements OnInit {
     public resetGame(): void {
         this.game.resetGame();
         this.focusLetterBox(this.game.focussedGuessIndex!, this.game.focussedLetterIndex!);
+    }
+
+    public openHelpModal(): void {
+        this.modalService.open(this.helpModal, { size: 'lg' });
     }
 }
