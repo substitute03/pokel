@@ -1,5 +1,20 @@
-<div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="d-flex flex-column align-items-center">
+<div class="game-screen-container d-flex justify-content-center align-items-center vh-100">
+    <!-- <div class="pokeball-bg">
+        <div class="pokeball-center"></div>
+    </div> -->
+    <!-- <div class="pokeball-bg-2">
+        <div class="pokeball-center-2"></div>
+    </div>
+    <div class="pokeball-bg-3">
+        <div class="pokeball-center-3"></div>
+    </div>
+    <div class="pokeball-bg-4">
+        <div class="pokeball-center-4"></div>
+    </div>
+    <div class="pokeball-bg-5">
+        <div class="pokeball-center-5"></div>
+    </div> -->
+    <div class="game-content d-flex flex-column align-items-center">
 
         <img class="img-fluid" style="width:250px" src="assets/pokel.png">
 
@@ -53,8 +68,14 @@
                             (click)="focusLetterBox(gIndex, lIndex)">
                             {{ letter.value | uppercase }}
                         </div>
-                        <span *ngIf="focussedLetterIndex === -1"
+                        <span *ngIf="focussedLetterIndex === -1 && !evaluatingGuess"
                             class="text-center d-flex align-items-center justify-content-center fs-3">⏎</span>
+                        <div *ngIf="evaluatingGuess"
+                            class="spinning-pokeball-container d-flex align-items-center justify-content-center">
+                            <div class="spinning-pokeball">
+                                <div class="spinning-pokeball-center"></div>
+                            </div>
+                        </div>
                     </div>
                 </ng-container>
                 <ng-template #notCurrentGuess>
