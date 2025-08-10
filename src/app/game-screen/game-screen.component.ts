@@ -122,6 +122,10 @@ export class GameScreenComponent implements OnInit {
         const result = this.game.handleEnter();
 
         if (result.isValidPokemon && result.currentGuess) {
+            // Make sure the focussed letter index is not -1 as this interferes with
+            // the pokeball spinner and pushes the boxes to the right
+            this.game.focussedLetterIndex = 1;
+
             // Valid Pokemon - apply flip animation
             letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
                 letterBox.classList.remove('border-dark');
