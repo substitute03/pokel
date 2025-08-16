@@ -1,0 +1,168 @@
+@keyframes flip {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(360deg);
+  }
+}
+
+@keyframes flip-reverse {
+  from {
+    transform: rotateX(360deg);
+  }
+  to {
+    transform: rotateX(0deg);
+  }
+}
+
+.flip {
+  animation: flip 1s ease-in-out forwards;
+}
+
+.flip-reverse {
+  animation: flip-reverse 1s ease-in-out forwards;
+}
+
+@keyframes shiver {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.shiver {
+  animation: shiver 0.5s ease-in-out forwards;
+}
+
+/* Row container for letter boxes */
+.d-flex {
+  position: relative;
+}
+
+/* Return arrow indicators - absolutely positioned to not affect layout */
+.d-flex > span {
+  position: absolute;
+  right: -35px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  color: #6c757d;
+  font-size: 1.5rem;
+}
+
+/* Enhanced letter box styling */
+.letter-box {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.2rem;
+  transition: box-shadow 0.3s ease;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.letter-box:hover {
+  border-color: #facc15;
+}
+
+.letter-box:focus {
+  outline: none;
+  border-color: #facc15;
+}
+
+/* Spinning Pokeball for evaluation */
+.spinning-pokeball-container {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.spinning-pokeball {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  animation: pokeball-spin 1s linear infinite;
+}
+
+.spinning-pokeball::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: 
+    linear-gradient(to bottom, 
+      #dc2626 0%, 
+      #dc2626 45%, 
+      #ffffff 55%, 
+      #ffffff 100%);
+  border: 2px solid #000000;
+}
+
+.spinning-pokeball::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #000000;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.spinning-pokeball-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #000000;
+  z-index: 3;
+}
+
+.spinning-pokeball-center::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.5px;
+  height: 1.5px;
+  border-radius: 50%;
+  background: #000000;
+}
+
+@keyframes pokeball-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
