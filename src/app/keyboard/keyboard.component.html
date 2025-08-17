@@ -1,25 +1,26 @@
 <div class="keyboard">
     <div class="keyboard-row">
-        <button class="key" *ngFor="let letter of ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P']"
+        <button class="key" (click)="keyOnClick(letter)"
+            *ngFor="let letter of ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P']"
             [ngClass]="getKeyBorderClass(letter)">
             {{ letter }}
         </button>
     </div>
 
     <div class="keyboard-row">
-        <button class="key" *ngFor="let letter of ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']"
-            [ngClass]="getKeyBorderClass(letter)">
+        <button class="key" (click)="keyOnClick(letter)"
+            *ngFor="let letter of ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']" [ngClass]="getKeyBorderClass(letter)">
             {{ letter }}
         </button>
     </div>
 
     <div class="keyboard-row">
-        <button class="key key-wide border-secondary border-1">ENTER</button>
-        <button class="key" *ngFor="let letter of ['Z', 'X', 'C', 'V', 'B', 'N', 'M']"
+        <button class="key key-wide border-secondary border-1" (click)="keyOnClick('Enter')">ENTER</button>
+        <button class="key" (click)="keyOnClick(letter)" *ngFor="let letter of ['Z', 'X', 'C', 'V', 'B', 'N', 'M']"
             [ngClass]="getKeyBorderClass(letter)">
             {{ letter }}
         </button>
-        <button class="key key-wide backspace border-secondary border-1">
+        <button class="key key-wide backspace border-secondary border-1" (click)="keyOnClick('Backspace')">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <!-- Backspace arrow with X - matching letter styling -->
                 <path d="M22 4H8L2 12l6 8h14V4z" fill="none" stroke="currentColor" stroke-width="1.5" />

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Guess } from '../domain/guess';
 
 interface letterClass {
@@ -25,6 +25,7 @@ export class KeyboardComponent implements OnChanges {
     @Input() guesses: Guess[] = [];
     @Input() evaluatingGuess: boolean = false;
     @Input() isDoingFlipAnimation: boolean = false;
+    @Output() validKeyPress: EventEmitter<string> = new EventEmitter<string>();
     currentLetterClasses: letterClass[] = [];
 
     constructor() { }
@@ -45,6 +46,10 @@ export class KeyboardComponent implements OnChanges {
                 this.getKeyBorderClass(letter);
             });
         }
+    }
+
+    public keyOnClick(key: string): void {
+        this.validKeyPress.emit(key);
     }
 
     public getKeyBorderClass(letter: string): { [key: string]: boolean } {

@@ -40,6 +40,18 @@ export class GameScreenComponent implements OnInit {
         this.focusLetterBox(this.game.focussedGuessIndex!, this.game.focussedLetterIndex!);
     }
 
+    onVirtualKeyboardKeyPress(key: string): void {
+        if (key === "Enter") {
+            this.handleEnterPressed(new KeyboardEvent("keydown", { key: "Enter" }));
+        }
+        else if (key === "Backspace") {
+            this.handleBackspacePressed();
+        }
+        else if (this.game.isValidCharacter(key)) {
+            this.handleValidCharacterPressed(key);
+        }
+    }
+
     @HostListener('window:keydown', ['$event'])
     onWindowKeyDown(event: KeyboardEvent) {
         const pressedKey = event.key;
