@@ -17,11 +17,11 @@
 }
 
 .keyboard-row:nth-child(2) {
-    margin-left: 20px; /* Indent second row */
+    margin-left: 0px;
 }
 
 .keyboard-row:nth-child(3) {
-    margin-left: 40px; /* Indent third row more */
+    margin-left: 0;
 }
 
 .key {
