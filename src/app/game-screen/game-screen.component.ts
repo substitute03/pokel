@@ -41,7 +41,10 @@ export class GameScreenComponent implements OnInit {
     }
 
     onVirtualKeyboardKeyPress(key: string): void {
-        if (key === "Enter") {
+        if (!this.game.canProcessInput()) {
+            return;
+        }
+        else if (key === "Enter") {
             this.handleEnterPressed(new KeyboardEvent("keydown", { key: "Enter" }));
         }
         else if (key === "Backspace") {
