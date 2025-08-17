@@ -20,10 +20,6 @@ export class LetterboxesComponent {
 
     constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
-    onFocusLetterBox(guessIndex: number, letterIndex: number): void {
-        this.focusLetterBox.emit({ guessIndex, letterIndex });
-    }
-
     getLetterBoxElement(guessIndex: number, letterIndex: number): HTMLElement | null {
         const letterBoxId = `g${guessIndex}l${letterIndex}`;
         return this.letterBoxesRef.nativeElement.querySelector(`#${letterBoxId}`);
@@ -87,5 +83,12 @@ export class LetterboxesComponent {
         letterBoxes.forEach((letterBox: HTMLElement) => {
             letterBox.classList.remove('flip', 'shiver');
         });
+    }
+
+    letterBoxOnClick(guessIndex: number, letterIndex: number): void {
+        this.focusLetterBoxElement(guessIndex, letterIndex);
+
+        // Emit event to update the game's focused letter index
+        this.focusLetterBox.emit({ guessIndex, letterIndex });
     }
 }

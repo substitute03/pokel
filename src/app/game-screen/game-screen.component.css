@@ -435,7 +435,6 @@
   border-radius: 8px;
   font-weight: 600;
   font-size: 1.2rem;
-  transition: box-shadow 0.3s ease;
   box-shadow: 
     0 2px 4px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -456,7 +455,6 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -487,7 +485,6 @@
   border: 2px solid #e9ecef;
   border-radius: 12px;
   font-weight: 600;
-  transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   color: #212529 !important;
 }

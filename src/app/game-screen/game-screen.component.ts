@@ -11,7 +11,7 @@ import { LetterboxesComponent } from '../letterboxes/letterboxes.component';
 })
 export class GameScreenComponent implements OnInit {
 
-    private game: Game = new Game();
+    public game: Game = new Game();
 
     // Expose game observables and properties for template binding
     get targetName$() { return this.game.targetName$; }
@@ -26,6 +26,9 @@ export class GameScreenComponent implements OnInit {
     get focussedGuessIndex() { return this.game.focussedGuessIndex; }
     get evaluatingGuess() { return this.game.evaluatingGuess; }
 
+    // Track flip animation state
+    isDoingFlipAnimation: boolean = false;
+
 
     @ViewChild('helpModal') helpModal!: any;
     @ViewChild('letterboxesComponent') letterboxesComponent!: LetterboxesComponent;
@@ -39,13 +42,15 @@ export class GameScreenComponent implements OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onWindowKeyDown(event: KeyboardEvent) {
-        event.preventDefault(); // Prevent default browser behavior to avoid the space bar being able to click the "Play again" button.
+        const pressedKey = event.key;
+
+        if (pressedKey === " ") {
+            event.preventDefault(); // Prevent default browser behavior to avoid the space bar being able to click the "Play again" button.
+        }
 
         if (!this.game.canProcessInput()) {
             return;
         }
-
-        const pressedKey = event.key;
 
         if (pressedKey === "ArrowLeft") {
             this.handleLeftArrowPressed();
@@ -129,6 +134,7 @@ export class GameScreenComponent implements OnInit {
             if (this.letterboxesComponent) {
                 // Set evaluating state to show pokeball spinner
                 this.game.evaluatingGuess = true;
+                this.isDoingFlipAnimation = true;
 
                 this.letterboxesComponent.applyFlipAnimation();
 
@@ -140,6 +146,7 @@ export class GameScreenComponent implements OnInit {
                 // Wait for animation to complete before processing result
                 setTimeout(() => {
                     this.handleGuessResult(result.currentGuess!);
+                    this.isDoingFlipAnimation = false;
                 }, totalDelay);
 
                 // Keep pokeball visible for a bit longer for better UX
@@ -172,6 +179,10 @@ export class GameScreenComponent implements OnInit {
                 this.focusLetterBox(result.newGuessIndex, result.newLetterIndex);
             }
         }
+    }
+
+    public onFocusLetterBox(event: { guessIndex: number, letterIndex: number }): void {
+        this.game.focussedLetterIndex = event.letterIndex;
     }
 
     private handleGuessResult(currentGuess: Guess): void {

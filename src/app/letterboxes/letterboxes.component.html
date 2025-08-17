@@ -7,7 +7,7 @@
                 [id]="'g' + gIndex + 'l' + lIndex"
                 class="m-1 p-1 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
                 [ngClass]="{'border border-success border-5': hasFoundWord === true && letter.matchType === 'exact'}"
-                (click)="onFocusLetterBox(gIndex, lIndex)">
+                (click)="letterBoxOnClick(gIndex, lIndex)">
                 {{ letter.value | uppercase }}
             </div>
             <span *ngIf="(focussedLetterIndex === -1 || focussedLetterIndex === null) && !evaluatingGuess"

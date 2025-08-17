@@ -41,9 +41,10 @@
         </div>
 
         <letterboxes #letterboxesComponent [guesses]="(guesses$ | async) || []" [guessNumber]="guessNumber"
-            [gameOver]="gameOver" [hasFoundWord]="hasFoundWord" [focussedLetterIndex]="focussedLetterIndex"
-            [evaluatingGuess]="evaluatingGuess">
+            [gameOver]="gameOver" [hasFoundWord]="hasFoundWord" [focussedLetterIndex]="this.game.focussedLetterIndex"
+            [evaluatingGuess]="evaluatingGuess" (focusLetterBox)="onFocusLetterBox($event)">
         </letterboxes>
+        <keyboard class="pt-4" [guesses]="(guesses$ | async) || []" [evaluatingGuess]="evaluatingGuess"></keyboard>
         <h4 *ngIf="hasFoundWord" class="mt-2">'Mon found! 🎉</h4>
         <button class="btn btn-danger btn-lg mt-4" type="button" (click)="resetGame()">Play again</button>
         <h4 class="mt-2" *ngIf="gameOver && hasFoundWord === false">{{targetNameString}}</h4>
