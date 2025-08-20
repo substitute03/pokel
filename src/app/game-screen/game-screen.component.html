@@ -1,7 +1,8 @@
 <div class="game-screen-container d-flex justify-content-center align-items-center vh-100">
-    <div class="game-content d-flex flex-column align-items-center">
+    <div class="game-content d-flex flex-column align-items-center justify-content-start">
 
-        <img class="img-fluid" style="width:250px" src="assets/pokel.png">
+        <!-- Logo - hidden on mobile -->
+        <img class="img-fluid small-mobile-hidden" style="width:200px" src="assets/pokel.png">
 
         <!-- Generation Selection Dropdown -->
         <div class="dropdown mb-2 mt-2" ngbDropdown #generationDropdown="ngbDropdown">
@@ -40,18 +41,43 @@
             </small>
         </div>
 
-        <letterboxes #letterboxesComponent [guesses]="(guesses$ | async) || []" [guessNumber]="guessNumber"
-            [gameOver]="gameOver" [hasFoundWord]="hasFoundWord" [focussedLetterIndex]="this.game.focussedLetterIndex"
-            [evaluatingGuess]="evaluatingGuess" (focusLetterBox)="onFocusLetterBox($event)">
-        </letterboxes>
-        <keyboard class="pt-4" [guesses]="(guesses$ | async) || []" [evaluatingGuess]="evaluatingGuess"
-            (validKeyPress)="onVirtualKeyboardKeyPress($event)"></keyboard>
+        <!-- Mobile Action Buttons - positioned above letterboxes -->
+        <div class="game-actions-mobile mb-5">
+            <button class="btn btn-danger btn-xs" (click)="resetGame()">Play Again</button>
+            <button class="btn btn-danger btn-xs" (click)="openHelpModal()">Help</button>
+        </div>
+
+        <!-- Letter Boxes -->
+        <div class="letterboxes-container mb-3">
+            <letterboxes #letterboxesComponent [guesses]="(guesses$ | async) || []" [guessNumber]="guessNumber"
+                [gameOver]="gameOver" [hasFoundWord]="hasFoundWord"
+                [focussedLetterIndex]="this.game.focussedLetterIndex" [evaluatingGuess]="evaluatingGuess"
+                (focusLetterBox)="onFocusLetterBox($event)">
+            </letterboxes>
+        </div>
+
+        <!-- Mobile Keyboard Container - positioned at bottom of content area -->
+        <div class="keyboard-container-mobile">
+            <keyboard class="pt-4" [guesses]="(guesses$ | async) || []" [evaluatingGuess]="evaluatingGuess"
+                (validKeyPress)="onVirtualKeyboardKeyPress($event)">
+            </keyboard>
+        </div>
+
+        <!-- Desktop Keyboard - hidden on mobile -->
+        <div class="keyboard-container-desktop">
+            <keyboard class="pt-4" [guesses]="(guesses$ | async) || []" [evaluatingGuess]="evaluatingGuess"
+                (validKeyPress)="onVirtualKeyboardKeyPress($event)">
+            </keyboard>
+        </div>
+
+        <!-- Game Status Messages -->
         <h4 *ngIf="hasFoundWord" class="mt-2">'Mon found! 🎉</h4>
-        <button class="btn btn-danger btn-lg mt-4" type="button" (click)="resetGame()">Play again</button>
         <h4 class="mt-2" *ngIf="gameOver && hasFoundWord === false">{{targetNameString}}</h4>
-        <button class="btn btn-sm btn-outline-danger mt-3" style="cursor: pointer;" (click)="openHelpModal()">
-            Help
-        </button>
+        <!-- Desktop Action Buttons - hidden on mobile -->
+        <div class="game-actions-desktop pt-4">
+            <button class="btn btn-danger btn-lg me-2" (click)="resetGame()">Play Again</button>
+            <button class="btn btn-outline-danger btn-sm" (click)="openHelpModal()">Help</button>
+        </div>
     </div>
 </div>
 

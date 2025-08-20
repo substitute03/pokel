@@ -52,10 +52,33 @@
   min-height: 100vh;
   position: relative;
   overflow: hidden;
+  padding: 20px;
 }
 
+/* Mobile responsive container adjustments */
+@media (max-width: 767.98px) {
+  .game-screen-container {
+    padding: 8px;
+    min-height: 100vh;
+    height: 100vh;
+    background: #fefce8;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}
 
-
+@media (max-width: 575.98px) {
+  .game-screen-container {
+    padding: 6px;
+    min-height: 100vh;
+    height: 100vh;
+    background: #fefce8;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}
 
 
 /* Large Pokeball background element */
@@ -428,6 +451,19 @@
   position: relative;
 }
 
+/* Mobile responsive letterbox spacing */
+@media (max-width: 767.98px) {
+  .d-flex {
+    gap: 20px !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .d-flex {
+    gap: 15px !important;
+  }
+}
+
 /* Enhanced letter box styling */
 .letter-box {
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
@@ -438,6 +474,22 @@
   box-shadow: 
     0 2px 4px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 767.98px) {
+  .letter-box {
+    font-size: 1.4rem;
+    border-radius: 10px;
+    border-width: 3px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .letter-box {
+    font-size: 1.3rem;
+    border-radius: 8px;
+    border-width: 2px;
+  }
 }
 
 .letter-box:hover {
@@ -550,6 +602,49 @@ small {
   z-index: -1;
 }
 
+/* Mobile responsive adjustments */
+@media (max-width: 767.98px) {
+  .game-content {
+    padding: 2px 8px 60px 8px;
+    border-radius: 15px;
+    margin: 4px;
+    min-height: calc(100vh - 8px);
+    height: calc(100vh - 8px);
+    max-width: calc(100% - 8px);
+    width: calc(100% - 8px);
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .game-content {
+    padding: 1px 6px 50px 6px;
+    border-radius: 12px;
+    margin: 3px;
+    min-height: calc(100vh - 6px);
+    height: calc(100vh - 6px);
+    max-width: calc(100% - 6px);
+    width: calc(100% - 6px);
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
+
 /* Spinning Pokeball for evaluation */
 .spinning-pokeball-container {
   position: absolute;
@@ -634,4 +729,327 @@ small {
 }
 
 
+/* Mobile Action Buttons - positioned above letterboxes */
+.game-actions-mobile {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  .game-actions-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .game-actions-mobile .btn {
+    margin: 0;
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .game-actions-mobile {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  
+  .game-actions-mobile .btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    min-width: 100px;
+  }
+}
+
+/* Desktop Action Buttons - hidden on mobile */
+.game-actions-desktop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 767.98px) {
+  .game-actions-desktop {
+    display: none;
+  }
+}
+
+/* Keyboard Container for Mobile - positioned at bottom of content area */
+.keyboard-container-mobile {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  .keyboard-container-mobile {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #fefce8;
+    padding: 8px;
+    border-radius: 0 0 20px 20px;
+    margin-top: auto;
+    flex-shrink: 0;
+  }
+  
+  .keyboard-container-mobile .key {
+    padding: 0.8rem 0.6rem;
+    min-width: 45px;
+    height: 50px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+  }
+  
+  .keyboard-container-mobile .key-wide {
+    min-width: 70px;
+    padding: 0.8rem 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .keyboard-container-mobile {
+    padding: 6px;
+    border-radius: 0 0 15px 15px;
+    background: #fefce8;
+  }
+  
+  .keyboard-container-mobile .key {
+    padding: 0.7rem 0.5rem;
+    min-width: 40px;
+    height: 45px;
+    font-size: 1rem;
+    border-radius: 6px;
+  }
+  
+  .keyboard-container-mobile .key-wide {
+    min-width: 60px;
+    padding: 0.7rem 0.8rem;
+  }
+}
+
+/* Desktop Keyboard - hidden on mobile */
+.keyboard-container-desktop {
+  display: block;
+}
+
+@media (max-width: 767.98px) {
+  .keyboard-container-desktop {
+    display: none;
+  }
+}
+
+/* Mobile responsive dropdown */
+@media (max-width: 767.98px) {
+  .dropdown-toggle {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .dropdown-toggle {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    min-width: 180px;
+  }
+}
+
+/* Mobile responsive buttons */
+@media (max-width: 767.98px) {
+  .btn {
+    border-radius: 10px;
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+  }
+  
+  .btn-lg {
+    padding: 0.7rem 1.4rem;
+    font-size: 1.1rem;
+  }
+  
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .btn {
+    border-radius: 8px;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .btn-lg {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+  }
+  
+  .btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile responsive headings */
+@media (max-width: 767.98px) {
+  h4 {
+    font-size: 1.2rem;
+  }
+  
+  small {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  h4 {
+    font-size: 1.1rem;
+  }
+  
+  small {
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile responsive pokeball sizing */
+@media (max-width: 767.98px) {
+  .pokeball-bg {
+    width: 200px;
+    height: 200px;
+    top: 15%;
+    right: 5%;
+  }
+  
+  .pokeball-bg-2 {
+    width: 150px;
+    height: 150px;
+    top: 8%;
+    left: 3%;
+  }
+  
+  .pokeball-bg-3 {
+    width: 100px;
+    height: 100px;
+    bottom: 10%;
+    right: 3%;
+  }
+  
+  .pokeball-bg-4 {
+    width: 80px;
+    height: 80px;
+    top: 45%;
+    left: 10%;
+  }
+  
+  .pokeball-bg-5 {
+    width: 90px;
+    height: 90px;
+    bottom: 20%;
+    left: 5%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .pokeball-bg {
+    width: 150px;
+    height: 150px;
+    top: 10%;
+    right: 2%;
+  }
+  
+  .pokeball-bg-2 {
+    width: 100px;
+    height: 100px;
+    top: 5%;
+    left: 2%;
+  }
+  
+  .pokeball-bg-3 {
+    width: 80px;
+    height: 80px;
+    bottom: 8%;
+    right: 2%;
+  }
+  
+  .pokeball-bg-4 {
+    width: 60px;
+    height: 60px;
+    top: 40%;
+    left: 5%;
+  }
+  
+  .pokeball-bg-5 {
+    width: 70px;
+    height: 70px;
+    bottom: 15%;
+    left: 3%;
+  }
+}
+
+/* Handle mobile height constraints */
+@media (max-height: 700px) and (max-width: 767.98px) {
+  .game-content {
+    padding: 4px 8px 50px 8px;
+    margin: 4px;
+    min-height: calc(100vh - 8px);
+    height: calc(100vh - 8px);
+    border-radius: 15px;
+  }
+}
+
+@media (max-height: 600px) and (max-width: 575.98px) {
+  .game-content {
+    padding: 3px 6px 40px 6px;
+    margin: 3px;
+    min-height: calc(100vh - 6px);
+    height: calc(100vh - 6px);
+    border-radius: 12px;
+  }
+}
+
+/* Mobile responsive border radius */
+@media (max-width: 767.98px) {
+  .game-content::before {
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .game-content::before {
+    border-radius: 0;
+  }
+}
+
+/* Letterboxes Container */
+.letterboxes-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 767.98px) {
+  .letterboxes-container {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .letterboxes-container {
+    margin-bottom: 16px;
+  }
+}
   

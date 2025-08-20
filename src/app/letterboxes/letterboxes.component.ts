@@ -31,7 +31,7 @@ export class LetterboxesComponent {
             letterBox.blur();
             letterBox.classList.remove('border-dark')
             letterBox.classList.remove('border-4');
-            letterBox.classList.add('border-secondary');
+            letterBox.classList.add('border');
         });
     }
 

@@ -62,3 +62,131 @@
     height: 20px;
     color: #212529;
 }
+
+/* Mobile responsive keyboard */
+@media (max-width: 767.98px) {
+  .keyboard {
+    width: 100%;
+    padding: 8px;
+    gap: 4px;
+  }
+  
+  .keyboard-row {
+    gap: 4px;
+  }
+  
+  .key {
+    padding: 0.4rem 0.6rem;
+    min-width: 35px;
+    height: 44px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+  }
+  
+  .key-wide {
+    min-width: 57px;
+  }
+  
+  .backspace svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .keyboard {
+    padding: 6px;
+    gap: 3px;
+  }
+  
+  .keyboard-row {
+    gap: 3px;
+  }
+  
+  .key {
+    padding: 0.3rem 0.5rem;
+    min-width: 32px;
+    height: 39px;
+    font-size: 0.8rem;
+    border-radius: 5px;
+  }
+  
+  .key-wide {
+    min-width: 52px;
+  }
+  
+  .backspace svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Additional mobile responsive adjustments */
+@media (max-width: 400px) {
+  .keyboard {
+    padding: 5px;
+    gap: 2px;
+  }
+  
+  .keyboard-row {
+    gap: 2px;
+  }
+  
+  .key {
+    padding: 0.25rem 0.4rem;
+    min-width: 29px;
+    height: 36px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+  }
+  
+  .key-wide {
+    min-width: 47px;
+  }
+  
+  .backspace svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 320px) {
+  .keyboard {
+    padding: 4px;
+    gap: 1px;
+  }
+  
+  .keyboard-row {
+    gap: 1px;
+  }
+  
+  .key {
+    padding: 0.2rem 0.3rem;
+    min-width: 27px;
+    height: 32px;
+    font-size: 0.7rem;
+    border-radius: 3px;
+  }
+  
+  .key-wide {
+    min-width: 42px;
+  }
+  
+  .backspace svg {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Handle landscape orientation on mobile */
+@media (max-width: 767.98px) and (orientation: landscape) {
+  .keyboard {
+    padding: 6px;
+    gap: 3px;
+  }
+  
+  .key {
+    height: 32px;
+    font-size: 0.8rem;
+  }
+}

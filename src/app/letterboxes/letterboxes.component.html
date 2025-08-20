@@ -23,7 +23,7 @@
     <ng-template #notCurrentGuess>
         <div class="d-flex">
             <div *ngFor="let letter of guess.letters; let lIndex = index" [id]="'g' + gIndex + 'l' + lIndex"
-                class="form-control m-1 p-1 square-box d-flex align-items-center justify-content-center border"
+                class="letter-box form-control m-1 p-1 square-box d-flex align-items-center justify-content-center border"
                 [ngClass]="
                 {   'border-4': letter.matchType !== 'unknown',
                     'border-secondary': letter.matchType === 'none',

@@ -165,3 +165,172 @@
     transform: rotate(360deg);
   }
 }
+
+/* Mobile responsive grid spacing */
+@media (max-width: 767.98px) {
+  .d-flex {
+    gap: 2px !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .d-flex {
+    gap: 1px !important;
+  }
+}
+
+/* Mobile responsive letter box sizing and spacing */
+@media (max-width: 767.98px) {
+  .letter-box,
+  .form-control.letter-box,
+  .d-flex .letter-box {
+    font-size: 1rem;
+    border-radius: 6px;
+    margin: 0 !important;
+    padding: 0.25rem !important;
+    border-width: 2px !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
+    width: 45px !important;
+    min-width: 45px !important;
+    max-width: 45px !important;
+  }
+  
+  /* Match type borders - make them thicker */
+  .letter-box.exact,
+  .letter-box.fuzzy,
+  .letter-box.none,
+  .d-flex .letter-box.exact,
+  .d-flex .letter-box.fuzzy,
+  .d-flex .letter-box.none {
+    border-width: 3px !important;
+  }
+  
+  /* Focused letterbox - make it thicker */
+  .letter-box:focus,
+  .d-flex .letter-box:focus {
+    border-width: 3px !important;
+  }
+  
+  /* Override Bootstrap m-1 class on mobile */
+  .m-1 {
+    margin: 0 !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .letter-box,
+  .form-control.letter-box,
+  .d-flex .letter-box {
+    font-size: 0.9rem;
+    border-radius: 5px;
+    margin: 0 !important;
+    padding: 0.2rem !important;
+    border-width: 2px !important;
+    height: 45px !important;
+    min-height: 45px !important;
+    max-height: 45px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+  }
+  
+  /* Match type borders - make them thicker */
+  .letter-box.exact,
+  .letter-box.fuzzy,
+  .letter-box.none,
+  .d-flex .letter-box.exact,
+  .d-flex .letter-box.fuzzy,
+  .d-flex .letter-box.none {
+    border-width: 3px !important;
+  }
+  
+  /* Focused letterbox - make it thicker */
+  .letter-box:focus,
+  .d-flex .letter-box:focus {
+    border-width: 3px !important;
+  }
+  
+  .m-1 {
+    margin-bottom: 1px !important;
+  }
+}
+
+/* Additional mobile responsive adjustments */
+@media (max-width: 400px) {
+  .d-flex {
+    gap: 1px;
+  }
+  
+  .d-flex > span {
+    right: -18px;
+    font-size: 0.9rem;
+  }
+  
+  .letter-box,
+  .form-control.letter-box,
+  .d-flex .letter-box {
+    font-size: 0.8rem;
+    border-radius: 4px;
+    padding: 0.15rem !important;
+    border-width: 2px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    width: 35px !important;
+    min-width: 35px !important;
+    max-width: 35px !important;
+  }
+  
+  .letter-box.exact,
+  .letter-box.fuzzy,
+  .letter-box.none {
+    border-width: 4px !important;
+  }
+  
+  .spinning-pokeball-container {
+    right: -18px;
+    width: 14px;
+    height: 14px;
+  }
+  
+  .spinning-pokeball {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .d-flex {
+    gap: 0px;
+  }
+  
+  .letter-box,
+  .form-control.letter-box,
+  .d-flex .letter-box {
+    font-size: 0.75rem;
+    border-radius: 3px;
+    padding: 0.1rem !important;
+    border-width: 2px !important;
+    height: 35px !important;
+    min-height: 35px !important;
+    max-height: 35px !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+  }
+  
+  .letter-box.exact,
+  .letter-box.fuzzy,
+  .letter-box.none {
+    border-width: 4px !important;
+  }
+}
+
+/* Handle landscape orientation on mobile */
+@media (max-width: 767.98px) and (orientation: landscape) {
+  .d-flex {
+    gap: 2px;
+  }
+}
