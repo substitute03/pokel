@@ -1,0 +1,37 @@
+<ng-container *ngFor="let guess of guesses; let gIndex = index">
+    <ng-container *ngIf="guessNumber == gIndex + 1 && !gameOver; else notCurrentGuess">
+        <div class="d-flex" #letterBoxesRef>
+            <span *ngIf="focussedLetterIndex === -1 || focussedLetterIndex === null"
+                class="text-center d-flex align-items-center justify-content-center text-white fs-3">⏎</span>
+            <div current-guess *ngFor="let letter of guess.letters; let lIndex = index"
+                [id]="'g' + gIndex + 'l' + lIndex"
+                class="m-1 p-1 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
+                [ngClass]="{'border border-success border-5': hasFoundWord === true && letter.matchType === 'exact'}"
+                (click)="letterBoxOnClick(gIndex, lIndex)">
+                {{ letter.value | uppercase }}
+            </div>
+            <span *ngIf="(focussedLetterIndex === -1 || focussedLetterIndex === null) && !evaluatingGuess"
+                class="text-center d-flex align-items-center justify-content-center fs-3">⏎</span>
+            <div *ngIf="evaluatingGuess"
+                class="spinning-pokeball-container d-flex align-items-center justify-content-center">
+                <div class="spinning-pokeball">
+                    <div class="spinning-pokeball-center"></div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #notCurrentGuess>
+        <div class="d-flex">
+            <div *ngFor="let letter of guess.letters; let lIndex = index" [id]="'g' + gIndex + 'l' + lIndex"
+                class="letter-box form-control m-1 p-1 square-box d-flex align-items-center justify-content-center border"
+                [ngClass]="
+                {   'border-4': letter.matchType !== 'unknown',
+                    'border-secondary': letter.matchType === 'none',
+                    'border-warning': letter.matchType === 'fuzzy',
+                    'border-success': letter.matchType === 'exact'
+                }">
+                {{ letter.value | uppercase }}
+            </div>
+        </div>
+    </ng-template>
+</ng-container>

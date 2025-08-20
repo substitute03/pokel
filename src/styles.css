@@ -2,17 +2,198 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
 
 .square-box {
-    width: 50px; /* Adjust the width to your desired size */
+    width: 50px; /* Default size for desktop */
     height: 50px; /* Same value as width for a square */
+}
+
+/* Mobile responsive square boxes */
+@media (max-width: 767.98px) {
+    .square-box {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .square-box {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Additional mobile responsive square boxes */
+@media (max-width: 400px) {
+    .square-box {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media (max-width: 320px) {
+    .square-box {
+        width: 25px;
+        height: 25px;
+    }
 }
 
 .focussed {
     border-color: #000000 !important;
     box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0), 0 0 8px rgba(0, 0, 0, 0) !important;
-  }
+}
 
-  .notFocussed {
+.notFocussed {
     border-color: #bba8a88c !important;
     box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0), 0 0 8px rgba(0, 0, 0, 0) !important;
-  }
+}
+
+/* Mobile-first responsive utilities */
+.mobile-hidden {
+    display: block;
+}
+
+@media (max-width: 767.98px) {
+    .mobile-hidden {
+        display: none !important;
+    }
+}
+
+/* Hide elements on small mobile screens only */
+.small-mobile-hidden {
+    display: block;
+}
+
+@media (max-width: 385px) {
+    .small-mobile-hidden {
+        display: none !important;
+    }
+}
+
+/* Ensure proper viewport handling */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Additional mobile responsive utilities */
+@media (max-width: 767.98px) {
+    .container-fluid {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .container-fluid {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+
+/* Handle mobile touch interactions */
+@media (max-width: 767.98px) {
+    button, .btn, .key, .letter-box {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+}
+
+/* Ensure proper mobile scrolling */
+@media (max-width: 767.98px) {
+    .game-screen-container {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+    }
+}
+
+/* Optimize mobile layout for consistent border design */
+@media (max-width: 767.98px) {
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    
+    .game-screen-container {
+        margin: 0;
+        padding: 8px;
+        overflow: hidden;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    
+    .game-content {
+        margin: 8px;
+        padding: 0;
+        overflow: hidden;
+        flex: 1;
+        overflow-y: auto;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .game-screen-container {
+        padding: 6px;
+        overflow: hidden;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    
+    .game-content {
+        margin: 6px;
+        padding: 0;
+        overflow: hidden;
+        flex: 1;
+        overflow-y: auto;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+}
+
+/* Ensure full height on mobile with consistent border */
+@media (max-width: 767.98px) {
+    html, body {
+        height: 100vh;
+        overflow: hidden;
+    }
+    
+    .game-screen-container {
+        height: 100vh;
+        overflow: hidden;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    
+    .game-content {
+        height: auto;
+        overflow: hidden;
+        flex: 1;
+        overflow-y: auto;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .game-content {
+        height: auto;
+        overflow: hidden;
+        flex: 1;
+        overflow-y: auto;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+}
 

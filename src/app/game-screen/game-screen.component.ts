@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild, HostListener, ChangeDetectorR
 import { Guess } from '../domain/guess';
 import { Game } from '../domain/game';
 import { NgbDropdown, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LetterboxesComponent } from '../letterboxes/letterboxes.component';
 
 @Component({
     selector: 'pok-game-screen',
@@ -10,7 +11,7 @@ import { NgbDropdown, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class GameScreenComponent implements OnInit {
 
-    private game: Game = new Game();
+    public game: Game = new Game();
 
     // Expose game observables and properties for template binding
     get targetName$() { return this.game.targetName$; }
@@ -25,8 +26,12 @@ export class GameScreenComponent implements OnInit {
     get focussedGuessIndex() { return this.game.focussedGuessIndex; }
     get evaluatingGuess() { return this.game.evaluatingGuess; }
 
-    @ViewChild('letterBoxesRef', { read: ElementRef }) letterBoxesRef!: ElementRef;
+    // Track flip animation state
+    isDoingFlipAnimation: boolean = false;
+
+
     @ViewChild('helpModal') helpModal!: any;
+    @ViewChild('letterboxesComponent') letterboxesComponent!: LetterboxesComponent;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private modalService: NgbModal) { }
 
@@ -35,15 +40,32 @@ export class GameScreenComponent implements OnInit {
         this.focusLetterBox(this.game.focussedGuessIndex!, this.game.focussedLetterIndex!);
     }
 
+    onVirtualKeyboardKeyPress(key: string): void {
+        if (!this.game.canProcessInput()) {
+            return;
+        }
+        else if (key === "Enter") {
+            this.handleEnterPressed(new KeyboardEvent("keydown", { key: "Enter" }));
+        }
+        else if (key === "Backspace") {
+            this.handleBackspacePressed();
+        }
+        else if (this.game.isValidCharacter(key)) {
+            this.handleValidCharacterPressed(key);
+        }
+    }
+
     @HostListener('window:keydown', ['$event'])
     onWindowKeyDown(event: KeyboardEvent) {
-        event.preventDefault(); // Prevent default browser behavior to avoid the space bar being able to click the "Play again" button.
+        const pressedKey = event.key;
+
+        if (pressedKey === " ") {
+            event.preventDefault(); // Prevent default browser behavior to avoid the space bar being able to click the "Play again" button.
+        }
 
         if (!this.game.canProcessInput()) {
             return;
         }
-
-        const pressedKey = event.key;
 
         if (pressedKey === "ArrowLeft") {
             this.handleLeftArrowPressed();
@@ -111,13 +133,6 @@ export class GameScreenComponent implements OnInit {
     }
 
     private handleEnterPressed(event: KeyboardEvent): void {
-        const letterBoxes = this.letterBoxesRef.nativeElement
-            .querySelectorAll('[current-guess]');
-
-        letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
-            letterBox.classList.remove('shiver');
-        });
-
         event.preventDefault();
         const result = this.game.handleEnter();
 
@@ -126,35 +141,39 @@ export class GameScreenComponent implements OnInit {
             // the pokeball spinner and pushes the boxes to the right
             this.game.focussedLetterIndex = 1;
 
-            // Valid Pokemon - apply flip animation
-            letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
-                letterBox.classList.remove('border-dark');
-                letterBox.classList.remove('border-4');
-                letterBox.classList.add('border-secondary');
-            });
-
             if (result.isValidGuess) {
                 this.game.guesses$.next([...this.game.guesses$.value]);
             }
 
-            letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
+            // Apply flip animation for valid Pokemon
+            if (this.letterboxesComponent) {
+                // Set evaluating state to show pokeball spinner
+                this.game.evaluatingGuess = true;
+                this.isDoingFlipAnimation = true;
+
+                this.letterboxesComponent.applyFlipAnimation();
+
+                // Calculate proper delay based on number of letters
+                // Each letter has 150ms delay, plus 1000ms for the flip animation itself
+                const letterCount = result.currentGuess.letters.length;
+                const totalDelay = (letterCount * 150) + 1000;
+
+                // Wait for animation to complete before processing result
                 setTimeout(() => {
-                    this.game.evaluatingGuess = true;
-                    letterBox.classList.add('flip');
-                    if (index === letterBoxes.length - 1) {
-                        setTimeout(() => {
-                            this.handleGuessResult(result.currentGuess!);
-                        }, 1000);
-                    }
-                }, index * 100);
-            });
+                    this.handleGuessResult(result.currentGuess!);
+                    this.isDoingFlipAnimation = false;
+                }, totalDelay);
+
+                // Keep pokeball visible for a bit longer for better UX
+                setTimeout(() => {
+                    this.game.evaluatingGuess = false;
+                }, totalDelay + 500);
+            }
         } else {
-            // Invalid Pokemon - apply shiver effect
-            letterBoxes.forEach((letterBox: HTMLElement, index: number) => {
-                setTimeout(() => {
-                    letterBox.classList.add('shiver');
-                }, index * 50);
-            });
+            // Apply shiver animation for invalid Pokemon
+            if (this.letterboxesComponent) {
+                this.letterboxesComponent.applyShiverAnimation();
+            }
         }
     }
 
@@ -175,6 +194,10 @@ export class GameScreenComponent implements OnInit {
                 this.focusLetterBox(result.newGuessIndex, result.newLetterIndex);
             }
         }
+    }
+
+    public onFocusLetterBox(event: { guessIndex: number, letterIndex: number }): void {
+        this.game.focussedLetterIndex = event.letterIndex;
     }
 
     private handleGuessResult(currentGuess: Guess): void {
@@ -201,34 +224,24 @@ export class GameScreenComponent implements OnInit {
 
     public focusLetterBox(guessIndex: number, letterIndex: number): void {
         this.changeDetectorRef.detectChanges();
-        const letterBoxElement = this.getLetterBoxElement(guessIndex, letterIndex);
 
-        if (letterBoxElement) {
-            // Remove focus from all letter boxes
-            this.blurAllLetterBoxes();
-
-            // Set focus and highlight on the clicked letter box
-            letterBoxElement.focus();
+        if (this.letterboxesComponent) {
+            this.letterboxesComponent.focusLetterBoxElement(guessIndex, letterIndex);
             this.game.focussedLetterIndex = letterIndex;
-            letterBoxElement.classList.remove('border-secondary')
-            letterBoxElement.classList.add('border-4');
-            letterBoxElement.classList.add('border-dark');
         }
     }
 
     private blurAllLetterBoxes(): void {
-        const letterBoxes = this.letterBoxesRef.nativeElement.querySelectorAll('.letter-box');
-        letterBoxes.forEach((letterBox: HTMLElement) => {
-            letterBox.blur();
-            letterBox.classList.remove('border-dark')
-            letterBox.classList.remove('border-4');
-            letterBox.classList.add('border-secondary');
-        });
+        if (this.letterboxesComponent) {
+            this.letterboxesComponent.blurAllLetterBoxes();
+        }
     }
 
     private getLetterBoxElement(guessIndex: number, letterIndex: number): HTMLElement | null {
-        const letterBoxId = `g${guessIndex}l${letterIndex}`;
-        return this.letterBoxesRef.nativeElement.querySelector(`#${letterBoxId}`);
+        if (this.letterboxesComponent) {
+            return this.letterboxesComponent.getLetterBoxElement(guessIndex, letterIndex);
+        }
+        return null;
     }
 
     public toggleGeneration(event: Event, generationNumber: number, dropdown?: NgbDropdown): void {

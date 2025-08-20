@@ -4,6 +4,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { GameScreenComponent } from './game-screen/game-screen.component';
+import { LetterboxesComponent } from './letterboxes/letterboxes.component';
+import { KeyboardComponent } from './keyboard/keyboard.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 
@@ -11,6 +13,8 @@ import { FormsModule } from '@angular/forms';
     declarations: [
         AppComponent,
         GameScreenComponent,
+        LetterboxesComponent,
+        KeyboardComponent,
     ],
     imports: [
         BrowserModule,

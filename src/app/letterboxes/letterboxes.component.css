@@ -1,0 +1,336 @@
+@keyframes flip {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(360deg);
+  }
+}
+
+@keyframes flip-reverse {
+  from {
+    transform: rotateX(360deg);
+  }
+  to {
+    transform: rotateX(0deg);
+  }
+}
+
+.flip {
+  animation: flip 1s ease-in-out forwards;
+}
+
+.flip-reverse {
+  animation: flip-reverse 1s ease-in-out forwards;
+}
+
+@keyframes shiver {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.shiver {
+  animation: shiver 0.5s ease-in-out forwards;
+}
+
+/* Row container for letter boxes */
+.d-flex {
+  position: relative;
+}
+
+/* Return arrow indicators - absolutely positioned to not affect layout */
+.d-flex > span {
+  position: absolute;
+  right: -35px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  color: #6c757d;
+  font-size: 1.5rem;
+}
+
+/* Enhanced letter box styling */
+.letter-box {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.2rem;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.letter-box:hover {
+  border-color: #facc15;
+}
+
+.letter-box:focus {
+  outline: none;
+  border-color: #facc15;
+}
+
+/* Spinning Pokeball for evaluation */
+.spinning-pokeball-container {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.spinning-pokeball {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  animation: pokeball-spin 1s linear infinite;
+}
+
+.spinning-pokeball::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: 
+    linear-gradient(to bottom, 
+      #dc2626 0%, 
+      #dc2626 45%, 
+      #ffffff 55%, 
+      #ffffff 100%);
+  border: 2px solid #000000;
+}
+
+.spinning-pokeball::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #000000;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.spinning-pokeball-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #000000;
+  z-index: 3;
+}
+
+.spinning-pokeball-center::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.5px;
+  height: 1.5px;
+  border-radius: 50%;
+  background: #000000;
+}
+
+@keyframes pokeball-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile responsive grid spacing */
+@media (max-width: 767.98px) {
+  .d-flex {
+    gap: 2px !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .d-flex {
+    gap: 1px !important;
+  }
+}
+
+/* Mobile responsive letter box sizing and spacing */
+@media (max-width: 767.98px) {
+  .letter-box,
+  .form-control.letter-box,
+  .d-flex .letter-box {
+    font-size: 1rem;
+    border-radius: 6px;
+    margin: 0 !important;
+    padding: 0.25rem !important;
+    border-width: 2px !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
+    width: 45px !important;
+    min-width: 45px !important;
+    max-width: 45px !important;
+  }
+  
+  /* Match type borders - make them thicker */
+  .letter-box.exact,
+  .letter-box.fuzzy,
+  .letter-box.none,
+  .d-flex .letter-box.exact,
+  .d-flex .letter-box.fuzzy,
+  .d-flex .letter-box.none {
+    border-width: 3px !important;
+  }
+  
+  /* Focused letterbox - make it thicker */
+  .letter-box:focus,
+  .d-flex .letter-box:focus {
+    border-width: 3px !important;
+  }
+  
+  /* Override Bootstrap m-1 class on mobile */
+  .m-1 {
+    margin: 0 !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .letter-box,
+  .form-control.letter-box,
+  .d-flex .letter-box {
+    font-size: 0.9rem;
+    border-radius: 5px;
+    margin: 0 !important;
+    padding: 0.2rem !important;
+    border-width: 2px !important;
+    height: 45px !important;
+    min-height: 45px !important;
+    max-height: 45px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+  }
+  
+  /* Match type borders - make them thicker */
+  .letter-box.exact,
+  .letter-box.fuzzy,
+  .letter-box.none,
+  .d-flex .letter-box.exact,
+  .d-flex .letter-box.fuzzy,
+  .d-flex .letter-box.none {
+    border-width: 3px !important;
+  }
+  
+  /* Focused letterbox - make it thicker */
+  .letter-box:focus,
+  .d-flex .letter-box:focus {
+    border-width: 3px !important;
+  }
+  
+  .m-1 {
+    margin-bottom: 1px !important;
+  }
+}
+
+/* Additional mobile responsive adjustments */
+@media (max-width: 400px) {
+  .d-flex {
+    gap: 1px;
+  }
+  
+  .d-flex > span {
+    right: -18px;
+    font-size: 0.9rem;
+  }
+  
+  .letter-box,
+  .form-control.letter-box,
+  .d-flex .letter-box {
+    font-size: 0.8rem;
+    border-radius: 4px;
+    padding: 0.15rem !important;
+    border-width: 2px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    width: 35px !important;
+    min-width: 35px !important;
+    max-width: 35px !important;
+  }
+  
+  .letter-box.exact,
+  .letter-box.fuzzy,
+  .letter-box.none {
+    border-width: 4px !important;
+  }
+  
+  .spinning-pokeball-container {
+    right: -18px;
+    width: 14px;
+    height: 14px;
+  }
+  
+  .spinning-pokeball {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .d-flex {
+    gap: 0px;
+  }
+  
+  .letter-box,
+  .form-control.letter-box,
+  .d-flex .letter-box {
+    font-size: 0.75rem;
+    border-radius: 3px;
+    padding: 0.1rem !important;
+    border-width: 2px !important;
+    height: 35px !important;
+    min-height: 35px !important;
+    max-height: 35px !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+  }
+  
+  .letter-box.exact,
+  .letter-box.fuzzy,
+  .letter-box.none {
+    border-width: 4px !important;
+  }
+}
+
+/* Handle landscape orientation on mobile */
+@media (max-width: 767.98px) and (orientation: landscape) {
+  .d-flex {
+    gap: 2px;
+  }
+}

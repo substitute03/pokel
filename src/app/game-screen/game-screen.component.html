@@ -1,22 +1,8 @@
 <div class="game-screen-container d-flex justify-content-center align-items-center vh-100">
-    <!-- <div class="pokeball-bg">
-        <div class="pokeball-center"></div>
-    </div> -->
-    <!-- <div class="pokeball-bg-2">
-        <div class="pokeball-center-2"></div>
-    </div>
-    <div class="pokeball-bg-3">
-        <div class="pokeball-center-3"></div>
-    </div>
-    <div class="pokeball-bg-4">
-        <div class="pokeball-center-4"></div>
-    </div>
-    <div class="pokeball-bg-5">
-        <div class="pokeball-center-5"></div>
-    </div> -->
-    <div class="game-content d-flex flex-column align-items-center">
+    <div class="game-content d-flex flex-column align-items-center justify-content-start">
 
-        <img class="img-fluid" style="width:250px" src="assets/pokel.png">
+        <!-- Logo - hidden on mobile -->
+        <img class="img-fluid small-mobile-hidden" style="width:200px" src="assets/pokel.png">
 
         <!-- Generation Selection Dropdown -->
         <div class="dropdown mb-2 mt-2" ngbDropdown #generationDropdown="ngbDropdown">
@@ -55,51 +41,43 @@
             </small>
         </div>
 
-        <ng-container *ngIf="guesses$ | async as guesses">
-            <ng-container *ngFor="let guess of guesses; let gIndex = index">
-                <ng-container *ngIf="guessNumber == gIndex + 1 && !gameOver; else notCurrentGuess">
-                    <div class="d-flex" #letterBoxesRef>
-                        <span *ngIf="focussedLetterIndex === -1"
-                            class="text-center d-flex align-items-center justify-content-center text-white fs-3">⏎</span>
-                        <div current-guess *ngFor="let letter of guess.letters; let lIndex = index"
-                            [id]="'g' + gIndex + 'l' + lIndex"
-                            class="m-1 p-1 square-box text-center d-flex align-items-center justify-content-center letter-box form-control"
-                            [ngClass]="{'border border-success border-5': hasFoundWord === true && letter.matchType === 'exact'}"
-                            (click)="focusLetterBox(gIndex, lIndex)">
-                            {{ letter.value | uppercase }}
-                        </div>
-                        <span *ngIf="focussedLetterIndex === -1 && !evaluatingGuess"
-                            class="text-center d-flex align-items-center justify-content-center fs-3">⏎</span>
-                        <div *ngIf="evaluatingGuess"
-                            class="spinning-pokeball-container d-flex align-items-center justify-content-center">
-                            <div class="spinning-pokeball">
-                                <div class="spinning-pokeball-center"></div>
-                            </div>
-                        </div>
-                    </div>
-                </ng-container>
-                <ng-template #notCurrentGuess>
-                    <div class="d-flex">
-                        <div *ngFor="let letter of guess.letters; let lIndex = index" [id]="'g' + gIndex + 'l' + lIndex"
-                            class="form-control m-1 p-1 square-box d-flex align-items-center justify-content-center border"
-                            [ngClass]="
-                            {   'border-4': letter.matchType !== 'unknown',
-                                'border-secondary': letter.matchType === 'none',
-                                'border-warning': letter.matchType === 'fuzzy',
-                                'border-success': letter.matchType === 'exact'
-                            }">
-                            {{ letter.value | uppercase }}
-                        </div>
-                    </div>
-                </ng-template>
-            </ng-container>
-        </ng-container>
+        <!-- Mobile Action Buttons - positioned above letterboxes -->
+        <div class="game-actions-mobile mb-5">
+            <button class="btn btn-danger btn-xs" (click)="resetGame()">Play Again</button>
+            <button class="btn btn-danger btn-xs" (click)="openHelpModal()">Help</button>
+        </div>
+
+        <!-- Letter Boxes -->
+        <div class="letterboxes-container mb-3">
+            <letterboxes #letterboxesComponent [guesses]="(guesses$ | async) || []" [guessNumber]="guessNumber"
+                [gameOver]="gameOver" [hasFoundWord]="hasFoundWord"
+                [focussedLetterIndex]="this.game.focussedLetterIndex" [evaluatingGuess]="evaluatingGuess"
+                (focusLetterBox)="onFocusLetterBox($event)">
+            </letterboxes>
+        </div>
+
+        <!-- Mobile Keyboard Container - positioned at bottom of content area -->
+        <div class="keyboard-container-mobile">
+            <keyboard class="pt-4" [guesses]="(guesses$ | async) || []" [evaluatingGuess]="evaluatingGuess"
+                (validKeyPress)="onVirtualKeyboardKeyPress($event)">
+            </keyboard>
+        </div>
+
+        <!-- Desktop Keyboard - hidden on mobile -->
+        <div class="keyboard-container-desktop">
+            <keyboard class="pt-4" [guesses]="(guesses$ | async) || []" [evaluatingGuess]="evaluatingGuess"
+                (validKeyPress)="onVirtualKeyboardKeyPress($event)">
+            </keyboard>
+        </div>
+
+        <!-- Game Status Messages -->
         <h4 *ngIf="hasFoundWord" class="mt-2">'Mon found! 🎉</h4>
-        <button class="btn btn-danger btn-lg mt-4" type="button" (click)="resetGame()">Play again</button>
         <h4 class="mt-2" *ngIf="gameOver && hasFoundWord === false">{{targetNameString}}</h4>
-        <button class="btn btn-sm btn-outline-danger mt-3" style="cursor: pointer;" (click)="openHelpModal()">
-            Help
-        </button>
+        <!-- Desktop Action Buttons - hidden on mobile -->
+        <div class="game-actions-desktop pt-4">
+            <button class="btn btn-danger btn-lg me-2" (click)="resetGame()">Play Again</button>
+            <button class="btn btn-outline-danger btn-sm" (click)="openHelpModal()">Help</button>
+        </div>
     </div>
 </div>
 

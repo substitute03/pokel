@@ -175,9 +175,15 @@ export class Game {
             newLetterIndex = this.gameState.focussedLetterIndex - 1;
         }
 
+        if (deletedIndex === -1) {
+            return null;
+        }
+
         // Delete the letter
-        const guessToUpdate = this.gameState.guesses.find(g => g.guessNumber === this.gameState.guessNumber);
-        guessToUpdate?.letters[deletedIndex].deleteValue();
+        const guessToUpdate = this.gameState.guesses
+            .find(g => g.guessNumber === this.gameState.guessNumber);
+
+        guessToUpdate?.letters[deletedIndex]?.deleteValue();
 
         return {
             deletedIndex: deletedIndex,
@@ -191,8 +197,10 @@ export class Game {
         const deletedIndex = this.gameState.focussedLetterIndex!;
 
         // Delete the letter
-        const guessToUpdate = this.gameState.guesses.find(g => g.guessNumber === this.gameState.guessNumber);
-        guessToUpdate?.letters[deletedIndex].deleteValue();
+        const guessToUpdate = this.gameState.guesses
+            .find(g => g.guessNumber === this.gameState.guessNumber);
+
+        guessToUpdate?.letters[deletedIndex]?.deleteValue();
 
         return {
             deletedIndex: deletedIndex,
