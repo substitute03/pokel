@@ -62,7 +62,7 @@
     display: block;
 }
 
-@media (max-width: 385px) {
+@media (max-height: 1000px) {
     .small-mobile-hidden {
         display: none !important;
     }
