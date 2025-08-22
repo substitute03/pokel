@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Guess } from './guess';
 import { generationService } from '../services/generationService';
 import { GameState, ArrowNavigationResult, RightArrowNavigationResult, BackspaceResult, DeleteResult, ValidCharacterResult, EnterResult, GuessResult } from '../interfaces/game';
+import { PokemonService } from 'src/services/pokemon.service';
 
 export class Game {
     private gameState: GameState;
@@ -9,9 +10,11 @@ export class Game {
 
     // Observable state for reactive updates
     public targetName$: BehaviorSubject<string[]>;
+    public targetSprite$: BehaviorSubject<string | null>;
+    public targetPokedexEntry$: BehaviorSubject<string | null>;
     public guesses$: BehaviorSubject<Guess[]>;
 
-    constructor() {
+    constructor(private pokemonService: PokemonService) {
         this.gameState = {
             pokemon: [],
             generations: [1],
@@ -28,6 +31,8 @@ export class Game {
 
         this.targetName$ = new BehaviorSubject<string[]>([]);
         this.guesses$ = new BehaviorSubject<Guess[]>([]);
+        this.targetSprite$ = new BehaviorSubject<string | null>(null);
+        this.targetPokedexEntry$ = new BehaviorSubject<string | null>(null);
     }
 
     // Getters for component access
@@ -40,6 +45,8 @@ export class Game {
     get focussedLetterIndex(): number | null { return this.gameState.focussedLetterIndex; }
     get focussedGuessIndex(): number | null { return this.gameState.focussedGuessIndex; }
     get evaluatingGuess(): boolean { return this.gameState.evaluatingGuess; }
+    get targetSprite(): string | null { return this.targetSprite$.value; }
+    get targetPokedexEntry(): string | null { return this.targetPokedexEntry$.value; }
 
     // Setters for component access
     set focussedLetterIndex(value: number | null) { this.gameState.focussedLetterIndex = value; }
@@ -61,8 +68,20 @@ export class Game {
         this.gameState.evaluatingGuess = false;
         this.gameState.focussedGuessIndex = 0;
         this.gameState.focussedLetterIndex = 0;
-
         this.targetName$.next(this.gameState.targetName);
+        this.getPokemonData();
+    }
+
+    public getPokemonData(): void {
+        this.pokemonService.getPokemonSpriteByName(this.targetNameString)
+            .then(sprite => {
+                this.targetSprite$.next(sprite);
+            });
+
+        this.pokemonService.getPokedexEntryByName(this.targetNameString)
+            .then(entry => {
+                this.targetPokedexEntry$.next(entry);
+            });
     }
 
     public updateGenerations(generations: number[]): void {
@@ -248,7 +267,8 @@ export class Game {
             };
         }
 
-        if (this.gameState.pokemon.includes(currentGuess.getValue().toUpperCase())) {
+        const validPokemonList: string[] = this.generationService.getAllPokemon();
+        if (validPokemonList.includes(currentGuess.getValue().toUpperCase())) {
             // Valid Pokemon - evaluate the guess
             currentGuess.evaluateGuess();
 
@@ -312,8 +332,13 @@ export class Game {
     }
 
     private getTargetName(): string[] {
-        const randomIndex = Math.floor(Math.random() * this.gameState.pokemon.length);
-        const randomName = this.gameState.pokemon[randomIndex];
+        const pokemon: string[] = this.generationService
+            .getPokemonByGeneration(this.gameState.generations);
+
+        const randomIndex: number = Math.floor(
+            Math.random() * pokemon.length); // random index of the pokemon array
+
+        const randomName: string = pokemon[randomIndex];
 
         let targetName: string[] = [];
         for (let i = 0; i < randomName.length; i++) {

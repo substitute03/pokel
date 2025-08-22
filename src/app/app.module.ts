@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { GameScreenComponent } from './game-screen/game-screen.component';
 import { LetterboxesComponent } from './letterboxes/letterboxes.component';
 import { KeyboardComponent } from './keyboard/keyboard.component';
+import { HelpModalComponent } from './help-modal/help-modal.component';
+import { EndgameModalComponent } from './endgame-modal/endgame-modal.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 
@@ -15,6 +17,8 @@ import { FormsModule } from '@angular/forms';
         GameScreenComponent,
         LetterboxesComponent,
         KeyboardComponent,
+        HelpModalComponent,
+        EndgameModalComponent,
     ],
     imports: [
         BrowserModule,

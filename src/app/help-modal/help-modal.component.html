@@ -1,0 +1,46 @@
+<div class="modal-header">
+    <h5 class="modal-title">How to Play Pokel</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+</div>
+<div class="modal-body">
+    <h6>Objective</h6>
+    <p>Guess the Pokémon name in as few attempts as possible!</p>
+
+    <h6>How to Play</h6>
+    <ul>
+        <li>Type a Pokémon name and press Enter to submit your guess</li>
+        <li>You can type the name anywhere in the row - you don't need to fill every box. However, the target name
+            will fill every box.</li>
+        <li>The name must be a valid Pokémon from one of your selected generations</li>
+        <li>After each guess, you'll see color-coded feedback on each letter</li>
+    </ul>
+
+    <h6>Letter Feedback</h6>
+    <ul>
+        <li><strong class="text-success">Green Border:</strong> Letter is in the correct position</li>
+        <li><strong class="text-warning">Yellow Border:</strong> Letter is in the word but wrong position</li>
+        <li><strong class="text-secondary">Gray Border:</strong> Letter is not in the word</li>
+    </ul>
+
+    <h6>Controls</h6>
+    <ul>
+        <li><strong>Arrow Keys:</strong> Navigate between letter boxes</li>
+        <li><strong>Backspace/Delete:</strong> Remove letters</li>
+        <li><strong>Enter:</strong> Submit your guess</li>
+        <li><strong>Tab:</strong> Move to next letter box</li>
+    </ul>
+
+    <h6>Generation Selection</h6>
+    <p>Use the dropdown to select which Pokémon generations to include in the game. You can select multiple
+        generations or reset to just Generation 1.</p>
+
+    <h6>Tips</h6>
+    <ul>
+        <li>You don't need to fill every box when making a guess - use this to narrow down your guesses or target
+            specific letters</li>
+        <li>Pay attention to the letter feedback to narrow down possibilities</li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="close()">Got it!</button>
+</div>

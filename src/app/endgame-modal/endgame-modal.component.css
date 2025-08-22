@@ -1,0 +1,33 @@
+/* Endgame Modal Component Styles */
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.modal-body {
+    text-align: center;
+}
+
+.modal-body img {
+    margin: 1rem 0;
+}
+
+@media (max-width: 576px) {
+    .modal-body img {
+        max-width: 250px;
+        max-height: 250px;
+    }
+}
+
+.modal-body h5 {
+    color: #6c757d;
+    margin-top: 1rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}

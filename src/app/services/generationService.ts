@@ -7,6 +7,11 @@ export class generationService {
             .flatMap(g => g.pokemonNames);
     }
 
+    public getAllPokemon(): string[] {
+        return this.generations
+            .flatMap(g => g.pokemonNames);
+    }
+
     private generations: generation[] = [
         new generation(1,
             ["BULBASAUR", "IVYSAUR", "VENUSAUR", "CHARMANDER", "CHARMELEON", "CHARIZARD",

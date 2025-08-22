@@ -3,6 +3,9 @@ import { Guess } from '../domain/guess';
 import { Game } from '../domain/game';
 import { NgbDropdown, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LetterboxesComponent } from '../letterboxes/letterboxes.component';
+import { PokemonService } from 'src/services/pokemon.service';
+import { HelpModalComponent } from '../help-modal/help-modal.component';
+import { EndgameModalComponent } from '../endgame-modal/endgame-modal.component';
 
 @Component({
     selector: 'pok-game-screen',
@@ -11,12 +14,14 @@ import { LetterboxesComponent } from '../letterboxes/letterboxes.component';
 })
 export class GameScreenComponent implements OnInit {
 
-    public game: Game = new Game();
+    public game: Game = new Game(new PokemonService());
 
     // Expose game observables and properties for template binding
     get targetName$() { return this.game.targetName$; }
     get guesses$() { return this.game.guesses$; }
     get pokemon() { return this.game.pokemon; }
+    get targetSprite() { return this.game.targetSprite; }
+    get targetPokedexEntry() { return this.game.targetPokedexEntry; }
     get generations() { return this.game.generations; }
     get targetNameString() { return this.game.targetNameString; }
     get guessNumber() { return this.game.guessNumber; }
@@ -29,9 +34,8 @@ export class GameScreenComponent implements OnInit {
     // Track flip animation state
     isDoingFlipAnimation: boolean = false;
 
-
-    @ViewChild('helpModal') helpModal!: any;
     @ViewChild('letterboxesComponent') letterboxesComponent!: LetterboxesComponent;
+
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private modalService: NgbModal) { }
 
@@ -167,6 +171,10 @@ export class GameScreenComponent implements OnInit {
                 // Keep pokeball visible for a bit longer for better UX
                 setTimeout(() => {
                     this.game.evaluatingGuess = false;
+
+                    if (this.game.gameOver) {
+                        this.openEndgameModal();
+                    }
                 }, totalDelay + 500);
             }
         } else {
@@ -281,11 +289,37 @@ export class GameScreenComponent implements OnInit {
     }
 
     public resetGame(): void {
+        this.modalService.dismissAll();
         this.game.resetGame();
         this.focusLetterBox(this.game.focussedGuessIndex!, this.game.focussedLetterIndex!);
     }
 
     public openHelpModal(): void {
-        this.modalService.open(this.helpModal, { size: 'lg' });
+        const modalRef = this.modalService.open(HelpModalComponent, {
+            size: 'lg',
+            centered: true,
+            windowClass: 'modal-centered'
+        });
+    }
+
+    public openEndgameModal(): void {
+        const modalRef = this.modalService.open(EndgameModalComponent, {
+            size: 'lg',
+            centered: true,
+            windowClass: 'modal-centered'
+        });
+
+        // Pass the required data to the modal
+        modalRef.componentInstance.hasFoundWord = this.hasFoundWord;
+        modalRef.componentInstance.targetNameString = this.targetNameString;
+        modalRef.componentInstance.targetSprite = this.targetSprite;
+        modalRef.componentInstance.targetPokedexEntry = this.targetPokedexEntry;
+
+        // Handle modal result
+        modalRef.result.then((result) => {
+            if (result === 'reset') {
+                this.resetGame();
+            }
+        });
     }
 }

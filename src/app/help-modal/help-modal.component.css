@@ -1,0 +1,22 @@
+/* Help Modal Component Styles */
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-body h6 {
+    color: #495057;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-body ul {
+    margin-bottom: 1rem;
+}
+
+.modal-body li {
+    margin-bottom: 0.25rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
