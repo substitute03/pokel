@@ -12,6 +12,7 @@ export class EndgameModalComponent {
     @Input() targetNameString: string = '';
     @Input() targetSprite: string = '';
     @Input() targetPokedexEntry: string = '';
+    @Input() pokemonNumber: number = 0;
 
     constructor(public activeModal: NgbActiveModal) { }
 
@@ -21,5 +22,9 @@ export class EndgameModalComponent {
 
     resetGame(): void {
         this.activeModal.close('reset');
+    }
+
+    getPokemonNumber(): string {
+        return this.pokemonNumber ? this.pokemonNumber.toString().padStart(3, '0') : '???';
     }
 }

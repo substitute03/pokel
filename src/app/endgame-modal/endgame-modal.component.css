@@ -1,33 +1,383 @@
-/* Endgame Modal Component Styles */
-.modal-header {
-    border-bottom: 1px solid #dee2e6;
+/* Pokédex Modal Component Styles */
+.pokedex-container {
+    background: linear-gradient(145deg, #d32f2f, #b71c1c);
+    border-radius: 0.375rem; /* Match Bootstrap's default border-radius exactly */
+    padding: 0;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 2px 10px rgba(255, 255, 255, 0.1);
+    border: 3px solid #8d1f1f;
+    width: 100%; /* Ensure it fills the parent */
+    height: 100%; /* Ensure it fills the parent height */
+    margin: 0; /* Remove margin to eliminate gaps */
+    font-family: 'Courier New', monospace;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box; /* Include border in width/height calculations */
+    max-width: 100%; /* Prevent horizontal overflow */
 }
 
-.modal-title {
-    color: #495057;
-    margin-bottom: 1rem;
+/* Center modal vertically and horizontally */
+:host ::ng-deep .modal {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
-.modal-body {
-    text-align: center;
+:host ::ng-deep .modal-dialog {
+    margin: 0;
+    max-height: 90vh;
+    max-width: 95vw; /* Increased max-width to allow more space */
+    width: 100%; /* Ensure the dialog itself can expand */
+    padding: 0; /* Remove any default padding */
+    border-radius: 0; /* Remove any border-radius from dialog */
 }
 
-.modal-body img {
-    margin: 1rem 0;
-}
-
-@media (max-width: 576px) {
-    .modal-body img {
-        max-width: 250px;
-        max-height: 250px;
+/* Additional responsive adjustments for very small screens */
+@media (max-width: 575px) {
+    :host ::ng-deep .modal-dialog {
+        max-width: 100vw; /* Use full viewport width */
+        margin: 0; /* Remove margin to eliminate white edges */
+        width: 100vw; /* Ensure full width usage */
+    }
+    
+    :host ::ng-deep .modal-content {
+        margin: 0; /* Remove any content margin */
+        width: 100%; /* Ensure content fills dialog */
     }
 }
 
-.modal-body h5 {
-    color: #6c757d;
-    margin-top: 1rem;
+/* Pokédex Header */
+.pokedex-header {
+    background: linear-gradient(145deg, #c62828, #a52714);
+    padding: 15px 20px;
+    text-align: center;
+    border-bottom: 3px solid #8d1f1f;
+    position: relative;
 }
 
-.modal-footer {
-    border-top: 1px solid #dee2e6;
+.pokedex-lights {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.red-light {
+    background: radial-gradient(circle, #ff4444, #cc0000);
+    animation: blink 2s infinite;
+}
+
+.yellow-light {
+    background: radial-gradient(circle, #ffeb3b, #fbc02d);
+    animation: blink 2s infinite 0.7s;
+}
+
+.green-light {
+    background: radial-gradient(circle, #4caf50, #388e3c);
+    animation: blink 2s infinite 1.4s;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+
+.pokedex-title {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+.pokedex-antenna {
+    position: absolute;
+    top: -5px;
+    right: 20px;
+    width: 4px;
+    height: 25px;
+    background: linear-gradient(to bottom, #666, #333);
+    border-radius: 2px;
+}
+
+.pokedex-antenna::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -2px;
+    width: 8px;
+    height: 8px;
+    background: #ffeb3b;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ffeb3b;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+/* Pokédex Screen */
+.pokedex-screen {
+    background: linear-gradient(145deg, #2c3e50, #34495e);
+    padding: 20px;
+    border: 3px solid #1a252f;
+    margin: 15px;
+    border-radius: 15px;
+    box-shadow: 
+        inset 0 5px 15px rgba(0, 0, 0, 0.4),
+        0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border: 1px solid #4a90e2;
+}
+
+.pokemon-number {
+    color: #4a90e2;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-shadow: 0 0 5px #4a90e2;
+}
+
+.pokemon-name {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    text-shadow: 0 0 5px #fff;
+}
+
+.pokemon-sprite-container {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 2px solid #4a90e2;
+}
+
+.pokemon-sprite {
+    max-width: 200px;
+    max-height: 200px;
+    filter: drop-shadow(0 0 10px rgba(74, 144, 226, 0.5));
+}
+
+.no-sprite-placeholder {
+    color: #4a90e2;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 40px;
+    border: 2px dashed #4a90e2;
+    border-radius: 10px;
+}
+
+/* Game Result Display */
+.game-result {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 2px solid;
+}
+
+.result-success {
+    border-color: #4caf50;
+}
+
+.result-failure {
+    border-color: #f44336;
+}
+
+.result-title {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.result-subtitle {
+    color: #bdc3c7;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Pokédex Entry */
+.pokedex-entry {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 2px solid #f39c12;
+}
+
+.entry-title {
+    color: #f39c12;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    text-align: center;
+    text-shadow: 0 0 5px #f39c12;
+}
+
+.entry-text {
+    color: #ecf0f1;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+    text-align: justify;
+}
+
+/* Pokédex Controls */
+.pokedex-controls {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: linear-gradient(145deg, #424242, #616161);
+    border-top: 3px solid #8d1f1f;
+}
+
+.pokedex-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 2px solid #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.pokedex-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+/* Pokédex Footer */
+.pokedex-footer {
+    background: linear-gradient(145deg, #424242, #616161);
+    padding: 15px;
+    text-align: center;
+    border-top: 3px solid #8d1f1f;
+}
+
+.pokedex-speaker {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.speaker-hole {
+    width: 8px;
+    height: 8px;
+    background: #333;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .pokedex-container {
+        margin: 0; /* Remove margin to eliminate white edges */
+        border-radius: 0.375rem; /* Keep consistent with Bootstrap */
+        width: 100%; /* Fill the entire modal width */
+        max-width: 100%; /* Prevent horizontal overflow */
+    }
+    
+    .pokedex-screen {
+        margin: 5px; /* Reduce margin */
+        padding: 10px; /* Reduce padding */
+    }
+    
+    .pokedex-header {
+        padding: 10px 15px; /* Reduce header padding */
+    }
+    
+    .pokedex-lights {
+        gap: 10px; /* Reduce gap between lights */
+    }
+    
+    .light {
+        width: 10px; /* Make lights slightly smaller */
+        height: 10px;
+    }
+    
+    .pokedex-title {
+        font-size: 1.3rem; /* Reduce title size */
+    }
+    
+    .pokedex-antenna {
+        right: 15px; /* Adjust antenna position */
+    }
+    
+    .pokemon-sprite {
+        max-width: 175px; /* Reduce sprite size */
+        max-height: 175px;
+    }
+    
+    .pokedex-controls {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px; /* Reduce padding */
+    }
+    
+    .pokedex-btn {
+        justify-content: center;
+        padding: 10px 15px; /* Reduce button padding */
+        font-size: 0.9rem; /* Reduce button text size */
+    }
+    
+    .pokedex-footer {
+        padding: 10px; /* Reduce footer padding */
+    }
+}
+
+/* Modal Override Styles */
+:host ::ng-deep .modal-content {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0.375rem !important; /* Match Bootstrap's default border-radius */
+    overflow: hidden !important; /* Ensure no white corners show through */
+}
+
+:host ::ng-deep .modal-header,
+:host ::ng-deep .modal-body,
+:host ::ng-deep .modal-footer {
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    margin: 0 !important;
+    width: 100% !important;
 }

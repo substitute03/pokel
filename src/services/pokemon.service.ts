@@ -12,6 +12,17 @@ export class PokemonService {
         this.pokemonClient = new PokemonClient();
     }
 
+    async getPokemonByName(name: string): Promise<Pokemon | null> {
+        try {
+            const pokemon: Pokemon = await this.pokemonClient
+                .getPokemonByName(name);
+            return pokemon ?? null;
+        } catch (error) {
+            console.error('Error getting Pokémon:', error);
+            return null;
+        }
+    }
+
     async getPokemonSpriteByName(name: string, size: "large" | "small" = "large"): Promise<string | null> {
         const pokemon: Pokemon = await this.pokemonClient
             .getPokemonByName(name);
@@ -34,12 +45,23 @@ export class PokemonService {
 
         // format this string to remove all odd characters and make it a single line
         const formattedEntry = pokedexEntry?.flavor_text
-            .replace("", " ")
+            .replace(" ", " ")
             .replace(/\n/g, " ")
             .replace(/\r/g, " ")
             .replace(/\t/g, " ")
             .replace(/\s+/g, " ");
 
         return formattedEntry ?? null;
+    }
+
+    async getPokemonIdByName(name: string): Promise<number | null> {
+        try {
+            const pokemon: Pokemon = await this.pokemonClient
+                .getPokemonByName(name);
+            return pokemon?.id ?? null;
+        } catch (error) {
+            console.error('Error getting Pokémon ID:', error);
+            return null;
+        }
     }
 }

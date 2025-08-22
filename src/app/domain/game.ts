@@ -5,13 +5,14 @@ import { GameState, ArrowNavigationResult, RightArrowNavigationResult, Backspace
 import { PokemonService } from 'src/services/pokemon.service';
 
 export class Game {
-    private gameState: GameState;
+    public gameState: GameState;
     private generationService = new generationService();
 
     // Observable state for reactive updates
     public targetName$: BehaviorSubject<string[]>;
     public targetSprite$: BehaviorSubject<string | null>;
     public targetPokedexEntry$: BehaviorSubject<string | null>;
+    public targetPokemonNumber$: BehaviorSubject<number | null>;
     public guesses$: BehaviorSubject<Guess[]>;
 
     constructor(private pokemonService: PokemonService) {
@@ -33,6 +34,7 @@ export class Game {
         this.guesses$ = new BehaviorSubject<Guess[]>([]);
         this.targetSprite$ = new BehaviorSubject<string | null>(null);
         this.targetPokedexEntry$ = new BehaviorSubject<string | null>(null);
+        this.targetPokemonNumber$ = new BehaviorSubject<number | null>(null);
     }
 
     // Getters for component access
@@ -46,6 +48,7 @@ export class Game {
     get focussedGuessIndex(): number | null { return this.gameState.focussedGuessIndex; }
     get evaluatingGuess(): boolean { return this.gameState.evaluatingGuess; }
     get targetSprite(): string | null { return this.targetSprite$.value; }
+    get targetPokemonNumber(): number | null { return this.targetPokemonNumber$.value; }
     get targetPokedexEntry(): string | null { return this.targetPokedexEntry$.value; }
 
     // Setters for component access
@@ -73,9 +76,10 @@ export class Game {
     }
 
     public getPokemonData(): void {
-        this.pokemonService.getPokemonSpriteByName(this.targetNameString)
-            .then(sprite => {
-                this.targetSprite$.next(sprite);
+        this.pokemonService.getPokemonByName(this.targetNameString)
+            .then(pokemon => {
+                this.targetSprite$.next(pokemon?.sprites?.other?.['official-artwork']?.front_default ?? null);
+                this.targetPokemonNumber$.next(pokemon?.id ?? null);
             });
 
         this.pokemonService.getPokedexEntryByName(this.targetNameString)

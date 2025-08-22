@@ -22,6 +22,7 @@ export class GameScreenComponent implements OnInit {
     get pokemon() { return this.game.pokemon; }
     get targetSprite() { return this.game.targetSprite; }
     get targetPokedexEntry() { return this.game.targetPokedexEntry; }
+    get targetPokemonNumber() { return this.game.targetPokemonNumber; }
     get generations() { return this.game.generations; }
     get targetNameString() { return this.game.targetNameString; }
     get guessNumber() { return this.game.guessNumber; }
@@ -61,6 +62,10 @@ export class GameScreenComponent implements OnInit {
 
     @HostListener('window:keydown', ['$event'])
     onWindowKeyDown(event: KeyboardEvent) {
+        if (this.gameOver) {
+            return;
+        }
+
         const pressedKey = event.key;
 
         if (pressedKey === " ") {
@@ -302,7 +307,7 @@ export class GameScreenComponent implements OnInit {
         });
     }
 
-    public openEndgameModal(): void {
+    public async openEndgameModal(): Promise<void> {
         const modalRef = this.modalService.open(EndgameModalComponent, {
             size: 'lg',
             centered: true,
@@ -314,6 +319,7 @@ export class GameScreenComponent implements OnInit {
         modalRef.componentInstance.targetNameString = this.targetNameString;
         modalRef.componentInstance.targetSprite = this.targetSprite;
         modalRef.componentInstance.targetPokedexEntry = this.targetPokedexEntry;
+        modalRef.componentInstance.pokemonNumber = this.targetPokemonNumber || 0;
 
         // Handle modal result
         modalRef.result.then((result) => {

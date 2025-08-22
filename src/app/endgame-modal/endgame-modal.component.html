@@ -1,18 +1,68 @@
-<div class="modal-header">
-    <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
-</div>
-<h1 *ngIf="hasFoundWord" class="modal-title text-center text-bg-success">'Mon found!</h1>
-<h1 *ngIf="!hasFoundWord" class="modal-title text-center">Game Over!</h1>
-<h2 class="modal-title text-center pt-4 ">{{targetNameString}}</h2>
-<div class="modal-body text-center">
-    <ng-container *ngIf="targetSprite; else noSprite">
-        <img [src]="targetSprite" alt="Pokémon Sprite" />
-    </ng-container>
-    <ng-template #noSprite>
-        <p>{{targetNameString}}</p>
-    </ng-template>
-    <h5>{{targetPokedexEntry}}</h5>
-    <button type="button" class="btn btn-danger btn-lg mt-4" (click)="resetGame()">Play again</button>
-</div>
-<div class="modal-footer">
+<div class="pokedex-container">
+    <!-- Pokédex Header -->
+    <div class="pokedex-header">
+        <div class="pokedex-lights">
+            <div class="light red-light"></div>
+            <div class="light yellow-light"></div>
+            <div class="light green-light"></div>
+        </div>
+        <h1 class="pokedex-title">POKéDEX</h1>
+        <div class="pokedex-antenna"></div>
+    </div>
+
+    <!-- Pokédex Screen -->
+    <div class="pokedex-screen">
+        <div class="screen-header">
+            <span class="pokemon-number">#{{getPokemonNumber()}}</span>
+            <span class="pokemon-name">{{targetNameString}}</span>
+        </div>
+
+        <div class="pokemon-sprite-container">
+            <ng-container *ngIf="targetSprite; else noSprite">
+                <img [src]="targetSprite" alt="Pokémon Sprite" class="pokemon-sprite" />
+            </ng-container>
+            <ng-template #noSprite>
+                <div class="no-sprite-placeholder">{{targetNameString}}</div>
+            </ng-template>
+        </div>
+
+        <!-- Game Result Display -->
+        <div class="game-result">
+            <div *ngIf="hasFoundWord" class="result-success">
+                <h2 class="result-title">All right! {{targetNameString}} was caught!</h2>
+                <p class="result-subtitle">You successfully identified this Pokémon!</p>
+            </div>
+            <div *ngIf="!hasFoundWord" class="result-failure">
+                <h2 class="result-title">GAME OVER</h2>
+                <p class="result-subtitle">The Pokémon was {{targetNameString}}</p>
+            </div>
+        </div>
+
+        <!-- Pokédex Entry -->
+        <div class="pokedex-entry" *ngIf="targetPokedexEntry">
+            <h3 class="entry-title">Pokédex Entry</h3>
+            <p class="entry-text">{{targetPokedexEntry}}</p>
+        </div>
+    </div>
+
+    <!-- Pokédex Controls -->
+    <div class="pokedex-controls">
+        <button type="button" class="btn btn-primary pokedex-btn" (click)="close()">
+            <i class="btn-icon">❌</i>
+            Close
+        </button>
+        <button type="button" class="btn btn-success pokedex-btn" (click)="resetGame()">
+            <i class="btn-icon">🔄</i>
+            Play Again
+        </button>
+    </div>
+
+    <!-- Pokédex Footer -->
+    <div class="pokedex-footer">
+        <div class="pokedex-speaker">
+            <div class="speaker-hole"></div>
+            <div class="speaker-hole"></div>
+            <div class="speaker-hole"></div>
+        </div>
+    </div>
 </div>
