@@ -45,7 +45,6 @@ export class PokemonService {
 
         // format this string to remove all odd characters and make it a single line
         const formattedEntry = pokedexEntry?.flavor_text
-            .replace(" ", " ")
             .replace(/\n/g, " ")
             .replace(/\r/g, " ")
             .replace(/\t/g, " ")
